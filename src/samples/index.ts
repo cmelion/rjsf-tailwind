@@ -31,8 +31,9 @@ import defaults from './defaults';
 import options from './options';
 import ifThenElse from './ifThenElse';
 import customField from './customField';
+import { SamplesCollection } from '@/types/samples';
 
-export const samples = Object.freeze({
+export const samples: SamplesCollection = Object.freeze({
   Blank: { schema: {}, uiSchema: {}, formData: {} },
   Simple: simple,
   'UI Options': options,

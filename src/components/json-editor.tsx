@@ -22,7 +22,7 @@ export default function JsonEditor({ editorId, jsonData }: EditorProps) {
           value: jsonDataString,
           language: "json",
           theme: "vs-dark",
-          readOnly: true, // Make the editor read-only
+          readOnly: false, // Make the editor read-only
           automaticLayout: true, // Automatically adjust the layout when the size of the editor changes
           wordWrap: true,
         },

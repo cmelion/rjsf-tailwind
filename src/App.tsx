@@ -6,12 +6,16 @@ import { useRoutes } from "react-router-dom"
 import JsonEditor from "./components/json-editor"
 import Samples from "./components/samples"
 import { TailwindIndicator } from "./components/tailwind-indicator"
-import { AppState, useStore } from "./store"
+import { useStore } from "./store"
+import { AppState } from "./types/store"
 
 const selector = (state: AppState) => ({
   schema: state.schema,
   uiSchema: state.uiSchema,
   formData: state.formData,
+  updateSchema: state.updateSchema,
+  updateUiSchema: state.updateUiSchema,
+  updateFormData: state.updateFormData,
 })
 
 const ResponsiveContainer = ({ heading, children }: any) => {
@@ -30,7 +34,92 @@ const ResponsiveContainer = ({ heading, children }: any) => {
 const routes = [{ path: "/", element: <Home /> }]
 
 function Home() {
-  const { schema, uiSchema, formData } = useStore(selector)
+  const {
+    schema,
+    uiSchema,
+    formData,
+    updateSchema,
+    updateUiSchema,
+    updateFormData,
+  } = useStore(selector)
+
+  const handleSchemaChange = (value: string) => {
+    try {
+      const parsedSchema = JSON.parse(value)
+      updateSchema(parsedSchema)
+    } catch (e) {
+      console.error("Invalid JSON schema:", e)
+    }
+  }
+
+  const handleUiSchemaChange = (value: string) => {
+    try {
+      const parsedUiSchema = JSON.parse(value)
+
+      // Validate UI schema for common errors
+      const validatedSchema = validateUiSchema(parsedUiSchema)
+
+      updateUiSchema(validatedSchema)
+    } catch (e) {
+      console.error("Invalid UI schema JSON:", e)
+    }
+  }
+
+  const handleFormDataChange = (value: string) => {
+    try {
+      const parsedFormData = JSON.parse(value)
+      updateFormData(parsedFormData)
+    } catch (e) {
+      console.error("Invalid form data JSON:", e)
+    }
+  }
+
+  // Helper function to validate UI schema
+  const validateUiSchema = (schema: any): object => {
+    // Deep copy to avoid mutating the original
+    const result = JSON.parse(JSON.stringify(schema))
+
+    // List of valid widget names
+    const validWidgets = [
+      "text",
+      "textarea",
+      "select",
+      "checkboxes",
+      "radio",
+      "hidden",
+      "date",
+      "datetime",
+      "time",
+      "color",
+      "file",
+      "email",
+      "uri",
+      "data-url",
+      "password",
+    ]
+
+    // Recursively check and fix widgets
+    const validateObject = (obj: any) => {
+      if (!obj || typeof obj !== "object") return
+
+      Object.entries(obj).forEach(([key, value]) => {
+        // Fix 'ui:widget' entries
+        if (key === "ui:widget" && typeof value === "string") {
+          if (!validWidgets.includes(value)) {
+            console.warn(`Replacing invalid widget "${value}" with "text"`)
+            obj[key] = "text" // Replace with default widget
+          }
+        }
+        // Continue recursively
+        else if (value && typeof value === "object") {
+          validateObject(value)
+        }
+      })
+    }
+
+    validateObject(result)
+    return result
+  }
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -54,6 +143,7 @@ function Home() {
                   <JsonEditor
                     editorId="jsonSchemaEditorContainer"
                     jsonData={schema}
+                    onChange={handleSchemaChange}
                   />
                 </div>
               </ResponsiveContainer>
@@ -64,6 +154,7 @@ function Home() {
                       <JsonEditor
                         editorId="uiSchemaEditorContainer"
                         jsonData={uiSchema}
+                        onChange={handleUiSchemaChange}
                       />
                     </div>
                   </ResponsiveContainer>
@@ -72,6 +163,7 @@ function Home() {
                       <JsonEditor
                         editorId="formDataEditorContainer"
                         jsonData={formData}
+                        onChange={handleFormDataChange}
                       />
                     </div>
                   </ResponsiveContainer>
@@ -93,6 +185,9 @@ function Home() {
                       uiSchema={uiSchema}
                       formData={formData}
                       validator={validator}
+                      onChange={(data: any) => {
+                        updateFormData(data.formData)
+                      }}
                     />
                   </div>
                 </div>

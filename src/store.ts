@@ -5,6 +5,7 @@ import { create } from "zustand";
 import { AppState } from "./types/store";
 import { getSamplesList, getSampleByName } from "./api";
 
+
 export const useStore = create<AppState>((set, get) => ({
   schema: {} as JSONSchema7 | RJSFSchema,
   uiSchema: {},
@@ -68,5 +69,18 @@ export const useStore = create<AppState>((set, get) => ({
   setLabel: (label: string) => {
     set({ label });
     get().fetchSample(label);
+  },
+
+  // Update the schema, uiSchema, and formData
+  updateSchema: (schema: JSONSchema7 | RJSFSchema) => {
+    set({ schema });
+  },
+
+  updateUiSchema: (uiSchema: object) => {
+    set({ uiSchema });
+  },
+
+  updateFormData: (formData: object) => {
+    set({ formData });
   }
 }));

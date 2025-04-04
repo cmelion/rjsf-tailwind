@@ -5,8 +5,13 @@ on:
     branches:
       - main # or your default branch
 
+permissions:
+  id-token: write
+  contents: write
+  pages: write
+
 jobs:
-  build-and-deploy: # Renamed to be a single job name
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages

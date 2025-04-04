@@ -35,6 +35,11 @@ jobs:
       - name: Build Storybook
         run: yarn build-storybook -o dist/storybook
 
+      - name: Setup MSW Service Worker
+        run: |
+          npx msw init dist/ --save
+          npx msw init dist/storybook/ --save
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 

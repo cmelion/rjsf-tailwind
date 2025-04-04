@@ -27,9 +27,15 @@ yarn
 yarn dev
 ```
 
+### Run in Storybook mode
+
+```bash
+yarn storybook
+```
+
 ## Features
 
-- React + Typescript + Vite
+- React + Typescript + Vite + Storybook
 - Tailwind CSS
 - MSW - Mock Service Worker API mocking
 - Dark mode

@@ -37,8 +37,18 @@ jobs:
 
       - name: Setup MSW Service Worker
         run: |
+          # Initialize MSW in the root directory
           npx msw init dist/ --save
+          
+          # Copy the service worker to the storybook directory
+          cp dist/mockServiceWorker.js dist/storybook/
+          
+          # Initialize MSW in the storybook directory as well
           npx msw init dist/storybook/ --save
+          
+          # Verify both files exist
+          ls -la dist/mockServiceWorker.js
+          ls -la dist/storybook/mockServiceWorker.js
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4

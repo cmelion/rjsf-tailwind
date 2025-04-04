@@ -1,3 +1,4 @@
+import generateSchema from "generate-schema"
 import TailwindForm from "@/components/rjsf"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -18,12 +19,13 @@ const selector = (state: AppState) => ({
   updateFormData: state.updateFormData,
 })
 
-const ResponsiveContainer = ({ heading, children }: any) => {
+const ResponsiveContainer = ({ heading, children, actions }: any) => {
   return (
     <div className="flex items-center justify-center [&>div]:w-full">
       <div className="overflow-hidden bg-background sm:rounded-t-lg">
-        <div className="border bg-background px-4 py-5 sm:rounded-t-lg sm:px-6">
-          <h3 className="text-base font-semibold leading-6 ">{heading}</h3>
+        <div className="flex items-center justify-between border bg-background px-4 py-5 sm:rounded-t-lg sm:px-6">
+          <h3 className="text-base font-semibold leading-6">{heading}</h3>
+          {actions && <div className="flex gap-2">{actions}</div>}
         </div>
         <>{children}</>
       </div>
@@ -71,6 +73,28 @@ function Home() {
       updateFormData(parsedFormData)
     } catch (e) {
       console.error("Invalid form data JSON:", e)
+    }
+  }
+
+  const handleGenerateSchemaFromData = () => {
+    try {
+      // Generate schema from formData
+      const generatedSchema = generateSchema.json("Schema", formData)
+
+      // Clean up the generated schema
+      delete generatedSchema.$schema
+
+      // If there are properties, make them all required
+      if (generatedSchema.properties) {
+        generatedSchema.required = Object.keys(generatedSchema.properties)
+      }
+
+      // Update the schema in the store
+      updateSchema(generatedSchema)
+
+      console.log("Schema generated successfully")
+    } catch (error) {
+      console.error("Error generating schema:", error)
     }
   }
 
@@ -158,7 +182,18 @@ function Home() {
                       />
                     </div>
                   </ResponsiveContainer>
-                  <ResponsiveContainer heading="Form Data">
+                  <ResponsiveContainer
+                    heading="Form Data"
+                    actions={
+                      <button
+                        className="rounded bg-primary px-3 py-1 text-sm text-primary-foreground hover:bg-primary/90"
+                        onClick={handleGenerateSchemaFromData}
+                        title="Generate schema from data"
+                      >
+                        Generate Schema
+                      </button>
+                    }
+                  >
                     <div className="flex h-[calc(100vh/3)] flex-col">
                       <JsonEditor
                         editorId="formDataEditorContainer"

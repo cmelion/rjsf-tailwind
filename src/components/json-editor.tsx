@@ -1,5 +1,5 @@
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import "../userWorker"
 
 type EditorProps = {
@@ -13,96 +13,47 @@ export default function JsonEditor({
                                      editorId,
                                      jsonData,
                                      onChange,
-                                     debounceTime = 300
                                    }: EditorProps) {
-  const editorRef = useRef(null)
-  const [isEditorReady, setIsEditorReady] = useState(false)
-  const skipUpdateRef = useRef(false)
-  const debounceTimerRef = useRef<number | null>(null)
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
 
-  // Format JSON with indentation
-  const jsonDataString = JSON.stringify(jsonData, null, 2)
-
-  // Initialize the editor once
   useEffect(() => {
-    if (!editorId || editorRef.current) return
-
-    // @ts-expect-error - monaco-editor does not accept null refs
-    editorRef.current = monaco.editor.create(
-      // @ts-expect-error - monaco-editor does not accept null refs
-      document.getElementById(editorId),
-      {
-        value: jsonDataString,
-        language: "json",
-        theme: "vs-dark",
-        readOnly: false,
-        automaticLayout: true,
-        wordWrap: true,
-      }
-    )
-
-    setIsEditorReady(true)
-
-    // Cleanup when component unmounts
-    return () => {
-      if (editorRef.current) {
-        // @ts-expect-error - monaco-editor type definitions are incomplete
-        editorRef.current.dispose()
-        editorRef.current = null
+    // Create editor if not already initialized
+    if (!editorRef.current) {
+      const editorElement = document.getElementById(editorId)
+      if (editorElement) {
+        editorRef.current = monaco.editor.create(editorElement, {
+          value: JSON.stringify(jsonData, null, 2),
+          language: "json",
+          theme: "vs-dark",
+        })
       }
     }
-  }, [editorId]) // Only depends on editorId
 
-  // Handle editor changes with debouncing
-  useEffect(() => {
-    if (!isEditorReady || !onChange || !editorRef.current) return
+    // make it easier to work with the editor instance within the useEffect hook
+    const editor = editorRef.current
 
-    // @ts-expect-error - monaco-editor type definitions are incomplete
-    const disposable = editorRef.current.onDidChangeModelContent(() => {
-      if (skipUpdateRef.current) {
-        skipUpdateRef.current = false
-        return
-      }
+    // If the editor failed to initialize, exit early
+    if (!editor) return
 
-      // Clear any existing timer
-      if (debounceTimerRef.current !== null) {
-        window.clearTimeout(debounceTimerRef.current)
-      }
+    // Update editor content when jsonData changes
+    const currentValue = editor.getValue()
+    const newValue = JSON.stringify(jsonData, null, 2)
+    if (currentValue !== newValue) {
+      editor.setValue(newValue)
+    }
 
-      // Set a new timer to delay the update
-      debounceTimerRef.current = window.setTimeout(() => {
-        // @ts-expect-error - monaco-editor type definitions are incomplete
-        const value = editorRef.current?.getValue()
-        if (value !== undefined) {
-          onChange(value)
-        }
-        debounceTimerRef.current = null
-      }, debounceTime)
+    // Subscribe to content changes
+    const disposable = editor.onDidChangeModelContent(() => {
+      onChange?.(editor.getValue())
     })
 
+    // Cleanup function to dispose of resources when the component unmounts or dependencies change
     return () => {
       disposable.dispose()
-      // Clear any pending timeout on cleanup
-      if (debounceTimerRef.current !== null) {
-        window.clearTimeout(debounceTimerRef.current)
-      }
+      editor.dispose()
+      editorRef.current = undefined
     }
-  }, [isEditorReady, onChange, debounceTime])
-
-  // Update editor content when jsonData changes from outside
-  useEffect(() => {
-    if (!isEditorReady || !editorRef.current) return
-
-    // @ts-expect-error - monaco-editor type definitions are incomplete
-    const currentValue = editorRef.current.getValue()
-
-    // Only update if content is different
-    if (currentValue !== jsonDataString) {
-      skipUpdateRef.current = true // Prevent onChange from firing for this update
-      // @ts-expect-error - monaco-editor type definitions are incomplete
-      editorRef.current.setValue(jsonDataString)
-    }
-  }, [jsonDataString, isEditorReady])
+  }, [editorId, jsonData, onChange])
 
   return <div id={editorId} style={{ flex: 1, overflow: "auto" }} />
 }

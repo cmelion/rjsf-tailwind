@@ -7,7 +7,7 @@ on:
 
 permissions:
   id-token: write
-  contents: write
+  contents: read
   pages: write
 
 jobs:
@@ -42,7 +42,10 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
+        needs: Upload artifact
         uses: actions/deploy-pages@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          artifact_name: github-pages # Specify the artifact name
+          artifact_name: github-pages
           token: ${{ secrets.GITHUB_TOKEN }}

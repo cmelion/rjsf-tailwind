@@ -8,11 +8,10 @@
     <a href="https://rjsf-team.github.io/react-jsonschema-form/docs/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-   <a href="https://rjsf-tailwind.vercel.app/">View @rjsf/tailwind Playground</a>
+   <a href="https://cmelion.github.io/rjsf-tailwind/">View @rjsf/tailwind Playground</a>
     ·
    <a href="https://rjsf-team.github.io/react-jsonschema-form/">View @rjsf Playground</a>
   </p>
-</p>
 
 ## Usage
 
@@ -32,6 +31,7 @@ yarn dev
 
 - React + Typescript + Vite
 - Tailwind CSS
+- MSW - Mock Service Worker API mocking
 - Dark mode
 - Tailwind CSS class sorting, merging and linting.
 - 100% customizable

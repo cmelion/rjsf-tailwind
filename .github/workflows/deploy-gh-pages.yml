@@ -42,7 +42,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        needs: Upload artifact
         uses: actions/deploy-pages@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

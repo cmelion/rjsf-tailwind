@@ -8,7 +8,8 @@ const initMSW = async () => {
   if (typeof window !== 'undefined') {
     return worker.start({
       serviceWorker: {
-        url: './mockServiceWorker.js',
+        // Use this path to ensure it looks in the storybook directory
+        url: `${window.location.pathname.endsWith('/') ? '.' : '.'}/mockServiceWorker.js`,
       },
       onUnhandledRequest: 'bypass',
     });

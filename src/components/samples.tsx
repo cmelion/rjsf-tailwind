@@ -1,9 +1,15 @@
-import { samples } from "@/samples"
-import { AppState, useStore } from "@/store"
+// src/components/samples.tsx
+import { useEffect } from "react"
+import { useStore } from "@/store"
+import { AppState } from "@/types/store"
 
 const selector = (state: AppState) => ({
   label: state.label,
   setLabel: state.setLabel,
+  availableSamples: state.availableSamples,
+  loading: state.loading,
+  error: state.error,
+  fetchSamples: state.fetchSamples
 })
 
 function classNames(...classes: any) {
@@ -11,7 +17,29 @@ function classNames(...classes: any) {
 }
 
 export default function Samples() {
-  const { label, setLabel } = useStore(selector)
+  const { label, setLabel, availableSamples, loading, error, fetchSamples } = useStore(selector)
+
+  // Only fetch samples if we don't already have them
+  useEffect(() => {
+    if (availableSamples.length === 0) {
+      fetchSamples()
+    }
+  }, [fetchSamples, availableSamples.length])
+
+
+
+  if (loading && availableSamples.length === 0) {
+    return <div className="py-4">Loading samples...</div>
+  }
+
+  if (error && availableSamples.length === 0) {
+    return <div className="py-4 text-red-500">Error: {error}</div>
+  }
+
+  if (availableSamples.length === 0) {
+    return <div className="py-4">No samples available</div>
+  }
+
   return (
     <div>
       <div className="sm:hidden">
@@ -22,10 +50,10 @@ export default function Samples() {
           id="tabs"
           name="tabs"
           className="w-full bg-background focus:border-primary focus:ring-primary"
-          defaultValue={Object.keys(samples).find((sample) => sample === label)}
+          value={label}
           onChange={(e) => setLabel(e.target.value)}
         >
-          {Object.keys(samples).map((sample) => (
+          {availableSamples.map((sample) => (
             <option className="w-full" key={sample} value={sample}>
               {sample}
             </option>
@@ -34,7 +62,7 @@ export default function Samples() {
       </div>
       <div className="hidden sm:flex sm:flex-wrap">
         <div className="flex flex-wrap gap-2" aria-label="Tabs">
-          {Object.keys(samples).map((sample) => (
+          {availableSamples.map((sample) => (
             <button
               key={sample}
               className={classNames(

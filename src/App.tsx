@@ -1,3 +1,4 @@
+import generateSchema from "generate-schema"
 import TailwindForm from "@/components/rjsf"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -6,20 +7,25 @@ import { useRoutes } from "react-router-dom"
 import JsonEditor from "./components/json-editor"
 import Samples from "./components/samples"
 import { TailwindIndicator } from "./components/tailwind-indicator"
-import { AppState, useStore } from "./store"
+import { useStore } from "./store"
+import { AppState } from "./types/store"
 
 const selector = (state: AppState) => ({
   schema: state.schema,
   uiSchema: state.uiSchema,
   formData: state.formData,
+  updateSchema: state.updateSchema,
+  updateUiSchema: state.updateUiSchema,
+  updateFormData: state.updateFormData,
 })
 
-const ResponsiveContainer = ({ heading, children }: any) => {
+const ResponsiveContainer = ({ heading, children, actions }: any) => {
   return (
     <div className="flex items-center justify-center [&>div]:w-full">
       <div className="overflow-hidden bg-background sm:rounded-t-lg">
-        <div className="border bg-background px-4 py-5 sm:rounded-t-lg sm:px-6">
-          <h3 className="text-base font-semibold leading-6 ">{heading}</h3>
+        <div className="flex items-center justify-between border bg-background px-4 py-5 sm:rounded-t-lg sm:px-6">
+          <h3 className="text-base font-semibold leading-6">{heading}</h3>
+          {actions && <div className="flex gap-2">{actions}</div>}
         </div>
         <>{children}</>
       </div>
@@ -30,7 +36,114 @@ const ResponsiveContainer = ({ heading, children }: any) => {
 const routes = [{ path: "/", element: <Home /> }]
 
 function Home() {
-  const { schema, uiSchema, formData } = useStore(selector)
+  const {
+    schema,
+    uiSchema,
+    formData,
+    updateSchema,
+    updateUiSchema,
+    updateFormData,
+  } = useStore(selector)
+
+  const handleSchemaChange = (value: string) => {
+    try {
+      const parsedSchema = JSON.parse(value)
+      updateSchema(parsedSchema)
+    } catch (e) {
+      console.error("Invalid JSON schema:", e)
+    }
+  }
+
+  const handleUiSchemaChange = (value: string) => {
+    try {
+      const parsedUiSchema = JSON.parse(value)
+
+      // Validate UI schema for common errors
+      const validatedSchema = validateUiSchema(parsedUiSchema)
+
+      updateUiSchema(validatedSchema)
+    } catch (e) {
+      console.error("Invalid UI schema JSON:", e)
+    }
+  }
+
+  const handleFormDataChange = (value: string) => {
+    try {
+      const parsedFormData = JSON.parse(value)
+      updateFormData(parsedFormData)
+    } catch (e) {
+      console.error("Invalid form data JSON:", e)
+    }
+  }
+
+  const handleGenerateSchemaFromData = () => {
+    try {
+      // Generate schema from formData
+      const generatedSchema = generateSchema.json("Schema", formData)
+
+      // Clean up the generated schema
+      delete generatedSchema.$schema
+
+      // If there are properties, make them all required
+      if (generatedSchema.properties) {
+        generatedSchema.required = Object.keys(generatedSchema.properties)
+      }
+
+      // Update the schema in the store
+      updateSchema(generatedSchema)
+
+      console.log("Schema generated successfully")
+    } catch (error) {
+      console.error("Error generating schema:", error)
+    }
+  }
+
+  // Helper function to validate UI schema
+  const validateUiSchema = (schema: any): object => {
+    // Deep copy to avoid mutating the original
+    const result = JSON.parse(JSON.stringify(schema))
+
+    // List of valid widget names
+    const validWidgets = [
+      "text",
+      "textarea",
+      "select",
+      "checkboxes",
+      "radio",
+      "hidden",
+      "date",
+      "datetime",
+      "time",
+      "color",
+      "file",
+      "email",
+      "uri",
+      "data-url",
+      "password",
+    ]
+
+    // Recursively check and fix widgets
+    const validateObject = (obj: any) => {
+      if (!obj || typeof obj !== "object") return
+
+      Object.entries(obj).forEach(([key, value]) => {
+        // Fix 'ui:widget' entries
+        if (key === "ui:widget" && typeof value === "string") {
+          if (!validWidgets.includes(value)) {
+            console.warn(`Replacing invalid widget "${value}" with "text"`)
+            obj[key] = "text" // Replace with default widget
+          }
+        }
+        // Continue recursively
+        else if (value && typeof value === "object") {
+          validateObject(value)
+        }
+      })
+    }
+
+    validateObject(result)
+    return result
+  }
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -54,6 +167,7 @@ function Home() {
                   <JsonEditor
                     editorId="jsonSchemaEditorContainer"
                     jsonData={schema}
+                    onChange={handleSchemaChange}
                   />
                 </div>
               </ResponsiveContainer>
@@ -64,14 +178,27 @@ function Home() {
                       <JsonEditor
                         editorId="uiSchemaEditorContainer"
                         jsonData={uiSchema}
+                        onChange={handleUiSchemaChange}
                       />
                     </div>
                   </ResponsiveContainer>
-                  <ResponsiveContainer heading="Form Data">
+                  <ResponsiveContainer
+                    heading="Form Data"
+                    actions={
+                      <button
+                        className="rounded bg-primary px-3 py-1 text-sm text-primary-foreground hover:bg-primary/90"
+                        onClick={handleGenerateSchemaFromData}
+                        title="Generate schema from data"
+                      >
+                        Generate Schema
+                      </button>
+                    }
+                  >
                     <div className="flex h-[calc(100vh/3)] flex-col">
                       <JsonEditor
                         editorId="formDataEditorContainer"
                         jsonData={formData}
+                        onChange={handleFormDataChange}
                       />
                     </div>
                   </ResponsiveContainer>
@@ -93,6 +220,9 @@ function Home() {
                       uiSchema={uiSchema}
                       formData={formData}
                       validator={validator}
+                      onChange={(data: any) => {
+                        updateFormData(data.formData)
+                      }}
                     />
                   </div>
                 </div>

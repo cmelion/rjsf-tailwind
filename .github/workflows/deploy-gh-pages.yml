@@ -29,8 +29,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build
+      - name: Build App
         run: yarn build
+
+      - name: Build Storybook
+        run: yarn build-storybook -o dist/storybook
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4

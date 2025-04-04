@@ -47,8 +47,8 @@ jobs:
           cp dist/mockServiceWorker.js dist/storybook/
           
           # Make handlers available in storybook directory if they're in a separate file
-          mkdir -p dist/storybook/src/mocks
-          cp -r src/mocks/* dist/storybook/src/mocks/ || true
+          mkdir -p dist/storybook/mocks
+          cp -r src/mocks/* dist/storybook/mocks/ || true
           
           # Verify files exist
           ls -la dist/storybook/mockServiceWorker.js

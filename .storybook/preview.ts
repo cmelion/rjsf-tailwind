@@ -8,7 +8,7 @@ const initMSW = async () => {
   if (typeof window !== 'undefined') {
     return worker.start({
       serviceWorker: {
-        url: '/mockServiceWorker.js',
+        url: './mockServiceWorker.js',
       },
       onUnhandledRequest: 'bypass',
     });

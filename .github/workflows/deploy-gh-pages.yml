@@ -52,6 +52,7 @@ jobs:
           
           # Verify files exist
           ls -la dist/storybook/mockServiceWorker.js
+          ls -la dist/storybook/mocks/browser.ts
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4

@@ -8,9 +8,11 @@
     <a href="https://rjsf-team.github.io/react-jsonschema-form/docs/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-   <a href="https://cmelion.github.io/rjsf-tailwind/">View @rjsf/tailwind Playground</a>
+    <a href="https://cmelion.github.io/rjsf-tailwind/">View @rjsf/tailwind Playground</a>
     ·
-   <a href="https://rjsf-team.github.io/react-jsonschema-form/">View @rjsf Playground</a>
+    <a href="https://cmelion.github.io/rjsf-tailwind/storybook/">View @rjsf/tailwind Storybook</a>
+    <br />
+    <a href="https://rjsf-team.github.io/react-jsonschema-form/">View @rjsf Playground</a>
   </p>
 
 ## Usage

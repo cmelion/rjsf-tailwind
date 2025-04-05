@@ -35,30 +35,6 @@ jobs:
       - name: Build Storybook
         run: yarn build-storybook -o dist/storybook
 
-      - name: Setup MSW Service Worker
-        run: |
-          # Initialize MSW in the root directory
-          npx msw init dist/ --save
-          
-          # Initialize MSW in the storybook directory
-          npx msw init dist/storybook/ --save
-          
-          # Copy the service worker to ensure it's available
-          cp dist/mockServiceWorker.js dist/storybook/
-          
-          # Make handlers available in storybook directory
-          mkdir -p dist/storybook/mocks
-          cp -r src/mocks/* dist/storybook/mocks/ || true
-
-          # Make samples available in storybook directory
-          mkdir -p dist/storybook/samples
-          cp -r src/samples/* dist/storybook/samples/ || true
-          
-          # Verify files exist
-          ls -la dist/storybook/mockServiceWorker.js
-          ls -la dist/storybook/mocks/browser.ts
-          ls -la dist/storybook/samples/ordering.ts
-
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 

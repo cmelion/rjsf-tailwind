@@ -7,13 +7,13 @@ const config: StorybookConfig = {
   ],
   "addons": [
     "@storybook/addon-essentials",
-    "@storybook/addon-onboarding",
     "@chromatic-com/storybook",
     "@storybook/experimental-addon-test"
   ],
   "framework": {
     "name": "@storybook/react-vite",
     "options": {}
-  }
+  },
+  "staticDirs": ['../public'] // Add this to ensure MSW service worker is available
 };
 export default config;

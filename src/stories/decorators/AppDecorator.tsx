@@ -8,9 +8,10 @@ interface StorybookAppDecoratorProps {
 }
 
 export const StorybookAppDecorator: React.FC<StorybookAppDecoratorProps> = ({ children }) => {
+  // Remove the basename for static builds to avoid path resolution issues
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Router initialEntries={['/']} basename={import.meta.env.BASE_URL}>
+      <Router initialEntries={['/']}>
         {children}
       </Router>
     </ThemeProvider>

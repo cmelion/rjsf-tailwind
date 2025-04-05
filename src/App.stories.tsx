@@ -19,7 +19,6 @@ export default meta;
 type Story = StoryObj<typeof App>;
 
 export const Default: Story = {
-  render: () => (
-    <App />
-  ),
+  // Render App directly without wrapping in Routes/Route
+  render: () => <App />
 };

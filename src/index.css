@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 243 75% 59%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 243 75% 59%;
-    --radius: 0rem;
+    --background: 0 0% 100%;          /* ~ white */
+    --foreground: 240 10% 3.9%;       /* ~ slate-950 */
+    --card: 0 0% 100%;                /* ~ white */
+    --card-foreground: 240 10% 3.9%;  /* ~ slate-950 */
+    --popover: 0 0% 100%;             /* ~ white */
+    --popover-foreground: 240 10% 3.9%; /* ~ slate-950 */
+    --primary: 243 75% 59%;           /* ~ indigo-500/blue-600 */
+    --primary-foreground: 0 0% 98%;   /* ~ gray-50 */
+    --secondary: 240 4.8% 95.9%;      /* ~ gray-100 */
+    --secondary-foreground: 240 5.9% 10%; /* ~ slate-800 */
+    --muted: 240 4.8% 95.9%;          /* ~ gray-100 */
+    --muted-foreground: 240 3.8% 46.1%; /* ~ gray-500 */
+    --accent: 240 4.8% 95.9%;         /* ~ gray-100 */
+    --accent-foreground: 240 5.9% 10%; /* ~ slate-800 */
+    --destructive: 0 84.2% 60.2%;     /* ~ red-500 */
+    --destructive-foreground: 0 0% 98%; /* ~ gray-50 */
+    --border: 240 5.9% 90%;           /* ~ gray-200 */
+    --input: 240 5.9% 90%;            /* ~ gray-200 */
+    --ring: 243 75% 59%;              /* ~ indigo-500/blue-600 */
+    --radius: 0rem;                   /* ~ square corners */
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 239 84% 67%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 239 84% 67%;
+    --background: 240 10% 3.9%;      /* ~ slate-950 */
+    --foreground: 0 0% 98%;          /* ~ gray-50 */
+    --card: 240 10% 3.9%;            /* ~ slate-950 */
+    --card-foreground: 0 0% 98%;     /* ~ gray-50 */
+    --popover: 240 10% 3.9%;         /* ~ slate-950 */
+    --popover-foreground: 0 0% 98%;  /* ~ gray-50 */
+    --primary: 239 84% 67%;          /* ~ blue-500 */
+    --primary-foreground: 210 20% 98%; /* ~ slate-50 */
+    --secondary: 240 3.7% 15.9%;     /* ~ zinc-800 */
+    --secondary-foreground: 0 0% 98%; /* ~ gray-50 */
+    --muted: 240 3.7% 15.9%;         /* ~ zinc-800 */
+    --muted-foreground: 240 5% 64.9%; /* ~ zinc-400 */
+    --accent: 240 3.7% 15.9%;        /* ~ zinc-800 */
+    --accent-foreground: 0 0% 98%;   /* ~ gray-50 */
+    --destructive: 0 62.8% 30.6%;    /* ~ red-800 */
+    --destructive-foreground: 0 0% 98%; /* ~ gray-50 */
+    --border: 240 3.7% 15.9%;        /* ~ zinc-800 */
+    --input: 240 3.7% 15.9%;         /* ~ zinc-800 */
+    --ring: 239 84% 67%;             /* ~ blue-500 */
   }
 }
 
@@ -62,11 +62,37 @@
   /* Define indigo-rounded overrides via custom variables */
   .indigo-rounded {
     /* 79,70,229 corresponds to Tailwind\'s indigo-500 */
+    --background-color: 79, 70, 229;
+    --border: 79,70,229;
     --form-border: 79, 70, 229;
     --form-ring: 79, 70, 229;
     --radius: .5rem;
-    --background-color: 79, 70, 229;
   }
+  /* Remove border from container when indigo-rounded is applied */
+  .indigo-rounded.border {
+    border: none;
+  }
+
+  .indigo-rounded [type="text"]:focus,
+  .indigo-rounded [type="email"]:focus,
+  .indigo-rounded [type="url"]:focus,
+  .indigo-rounded [type="password"]:focus,
+  .indigo-rounded [type="number"]:focus,
+  .indigo-rounded [type="date"]:focus,
+  .indigo-rounded [type="datetime-local"]:focus,
+  .indigo-rounded [type="month"]:focus,
+  .indigo-rounded [type="search"]:focus,
+  .indigo-rounded [type="tel"]:focus,
+  .indigo-rounded [type="time"]:focus,
+  .indigo-rounded [type="week"]:focus,
+  .indigo-rounded [multiple]:focus,
+  .indigo-rounded select:focus,
+  .indigo-rounded textarea:focus {
+    outline: none;
+    border-color: rgb(var(--form-border));
+    box-shadow: 0 0 0 3px rgb(var(--form-ring) / 0.5);
+  }
+
   .indigo-rounded button {
     border-radius: var(--radius);
     background-color: rgb(var(--background-color));

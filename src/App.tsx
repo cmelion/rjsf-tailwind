@@ -1,9 +1,11 @@
-import generateSchema from "generate-schema"
 import TailwindForm from "@/components/rjsf"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import validator from "@rjsf/validator-ajv8"
+import generateSchema from "generate-schema"
 import { useRoutes } from "react-router-dom"
+import { FormStyleProvider, useFormStyle } from "./components/form-style-provider"
+import { FormStyleToggle } from "./components/form-style-toggle"
 import JsonEditor from "./components/json-editor"
 import Samples from "./components/samples"
 import { TailwindIndicator } from "./components/tailwind-indicator"
@@ -44,6 +46,8 @@ function Home() {
     updateUiSchema,
     updateFormData,
   } = useStore(selector)
+
+  const { formStyle } = useFormStyle()
 
   const handleSchemaChange = (value: string) => {
     try {
@@ -206,10 +210,10 @@ function Home() {
               </div>
             </div>
             <div className="col-span-2 grid items-start gap-6 lg:col-span-1">
-              <ResponsiveContainer heading="Tailwind Form">
+              <ResponsiveContainer heading="Tailwind Form" actions={<FormStyleToggle />}>
                 <div className="flex flex-col">
                   <div
-                    className="border"
+                    className={`border ${formStyle}`}
                     style={{
                       padding: 20,
                     }}
@@ -240,11 +244,13 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="relative flex min-h-screen flex-col">
-        <SiteHeader />
-        <div className="flex-1">{children}</div>
-      </div>
-      <TailwindIndicator />
+      <FormStyleProvider>
+        <div className="relative flex min-h-screen flex-col">
+          <SiteHeader />
+          <div className="flex-1">{children}</div>
+        </div>
+        <TailwindIndicator />
+      </FormStyleProvider>
     </ThemeProvider>
   )
 }

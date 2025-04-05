@@ -57,3 +57,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Define indigo-rounded overrides via custom variables */
+  .indigo-rounded {
+    /* 79,70,229 corresponds to Tailwind\'s indigo-500 */
+    --form-border: 79, 70, 229;
+    --form-ring: 79, 70, 229;
+    --radius: .5rem;
+    --background-color: 79, 70, 229;
+  }
+  .indigo-rounded button {
+    border-radius: var(--radius);
+    background-color: rgb(var(--background-color));
+    border: none;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+
+  .indigo-rounded button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--form-ring) / 0.5);
+  }
+}

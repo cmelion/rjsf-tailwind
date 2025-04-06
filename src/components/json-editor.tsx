@@ -4,14 +4,13 @@ import "../userWorker"
 
 type EditorProps = {
   editorId: string
-  jsonData: object
+  jsonData?: object
   onChange?: (newValue: string) => void
-  debounceTime?: number
 }
 
 export default function JsonEditor({
                                      editorId,
-                                     jsonData,
+                                     jsonData = {}, // Provide default empty object
                                      onChange,
                                    }: EditorProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()

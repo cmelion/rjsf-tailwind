@@ -1,0 +1,124 @@
+/* _indigo-rounded.css */
+
+@layer components {
+    /* Define indigo-rounded theme using consistent CSS variables */
+    .indigo-rounded {
+        /* Theme colors and properties */
+        --ir-primary: 79, 70, 229;        /* indigo-500 */
+        --ir-primary-text: 255, 255, 255; /* white */
+        --ir-border: 161, 161, 170;       /* gray-300 */
+        --ir-focus-ring-opacity: 0.5;     /* 50% opacity for focus rings */
+        --ir-radius: 0.5rem;              /* rounded corners */
+        --ir-spacing: 0.5rem;             /* consistent spacing */
+        --ir-checkbox-size: 1rem;         /* checkbox size */
+
+        /* Add danger color variables */
+        --ir-danger: 220, 38, 38;         /* red-600 */
+        --ir-danger-text: 255, 255, 255;  /* white */
+    }
+
+    /* Remove border from container */
+    .indigo-rounded.border {
+        border: none;
+    }
+
+    /* Base styling for all form inputs */
+    .indigo-rounded [type="text"],
+    .indigo-rounded [type="email"],
+    .indigo-rounded [type="url"],
+    .indigo-rounded [type="password"],
+    .indigo-rounded [type="number"],
+    .indigo-rounded [type="date"],
+    .indigo-rounded [type="datetime-local"],
+    .indigo-rounded [type="month"],
+    .indigo-rounded [type="search"],
+    .indigo-rounded [type="tel"],
+    .indigo-rounded [type="time"],
+    .indigo-rounded [type="week"],
+    .indigo-rounded [multiple],
+    .indigo-rounded select,
+    .indigo-rounded textarea {
+        border-radius: var(--ir-radius);
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(var(--ir-border));
+    }
+
+    /* Form inputs focus styling */
+    .indigo-rounded [type="text"]:focus,
+    .indigo-rounded [type="email"]:focus,
+    .indigo-rounded [type="url"]:focus,
+    .indigo-rounded [type="password"]:focus,
+    .indigo-rounded [type="number"]:focus,
+    .indigo-rounded [type="date"]:focus,
+    .indigo-rounded [type="datetime-local"]:focus,
+    .indigo-rounded [type="month"]:focus,
+    .indigo-rounded [type="search"]:focus,
+    .indigo-rounded [type="tel"]:focus,
+    .indigo-rounded [type="time"]:focus,
+    .indigo-rounded [type="week"]:focus,
+    .indigo-rounded [multiple]:focus,
+    .indigo-rounded select:focus,
+    .indigo-rounded textarea:focus {
+        outline: none;
+        border-color: rgb(var(--ir-primary));
+        box-shadow: 0 0 0 3px rgb(var(--ir-primary) / var(--ir-focus-ring-opacity));
+    }
+
+    /* Checkbox styling */
+    .indigo-rounded [type="checkbox"] {
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(var(--ir-border));
+        border-radius: calc(var(--ir-radius) / 2);
+        color: rgb(var(--ir-primary));
+        appearance: none;
+        width: var(--ir-checkbox-size);
+        height: var(--ir-checkbox-size);
+        cursor: pointer;
+        margin-right: var(--ir-spacing);
+    }
+
+    /* Checkbox focus state */
+    .indigo-rounded [type="checkbox"]:focus {
+        outline: none;
+        border-color: rgb(var(--ir-primary));
+        box-shadow: 0 0 0 3px rgb(var(--ir-primary) / var(--ir-focus-ring-opacity));
+    }
+
+    /* Checked state styling */
+    .indigo-rounded [type="checkbox"]:checked {
+        background-color: rgb(var(--ir-primary));
+        border-color: rgb(var(--ir-primary));
+        background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+    }
+
+    /* Common button styling for all variants */
+    .indigo-rounded button {
+        border-radius: var(--ir-radius);
+        border: none;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    /* Primary/default button styling */
+    .indigo-rounded button:not([variant*="danger"]) {
+        background-color: rgb(var(--ir-primary));
+        color: rgb(var(--ir-primary-text));
+    }
+
+    /* Danger button styling */
+    .indigo-rounded button[variant*="danger"] {
+        background-color: rgb(var(--ir-danger));
+        color: rgb(var(--ir-danger-text));
+    }
+
+    .indigo-rounded button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgb(var(--ir-primary) / var(--ir-focus-ring-opacity));
+    }
+
+    /* Button hover state */
+    .indigo-rounded button:hover {
+        background-color: rgb(var(--ir-primary) / 0.9);
+    }
+}

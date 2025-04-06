@@ -18,10 +18,6 @@ const meta: Meta<typeof JsonEditor> = {
       action: 'onChange',
       description: 'Callback function when the editor content changes.',
     },
-    debounceTime: {
-      control: 'number',
-      description: 'Debounce time in milliseconds for the onChange callback.',
-    },
   },
 };
 

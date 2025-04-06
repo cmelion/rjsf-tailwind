@@ -1,15 +1,10 @@
-function largeEnum(n: number) {
-  const list = [];
-  for (let i = 0; i < n; i++) {
-    list.push('option #' + i);
-  }
-  return list;
-}
-
 export default {
   schema: {
     definitions: {
-      largeEnum: { type: 'string', enum: largeEnum(100) },
+      largeEnum: {
+        type: 'string',
+        enumSize: 100  // Marker to generate 100 options
+      },
     },
     title: 'A rather large form',
     type: 'object',
@@ -20,14 +15,7 @@ export default {
       },
       choice1: { $ref: '#/definitions/largeEnum' },
       choice2: { $ref: '#/definitions/largeEnum' },
-      choice3: { $ref: '#/definitions/largeEnum' },
-      choice4: { $ref: '#/definitions/largeEnum' },
-      choice5: { $ref: '#/definitions/largeEnum' },
-      choice6: { $ref: '#/definitions/largeEnum' },
-      choice7: { $ref: '#/definitions/largeEnum' },
-      choice8: { $ref: '#/definitions/largeEnum' },
-      choice9: { $ref: '#/definitions/largeEnum' },
-      choice10: { $ref: '#/definitions/largeEnum' },
+      // Other choices...
     },
   },
   uiSchema: {

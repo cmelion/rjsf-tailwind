@@ -1,3 +1,5 @@
+@import './styles/_indigo-rounded.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,74 +57,5 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-@layer components {
-  /* Define indigo-rounded overrides via custom variables */
-  .indigo-rounded {
-    /* 79,70,229 corresponds to Tailwind\'s indigo-500 */
-    --background-color: 79, 70, 229;
-    --border: 79,70,229;
-    --form-border: 79, 70, 229;
-    --form-ring: 79, 70, 229;
-    --radius: .5rem;
-  }
-  /* Remove border from container when indigo-rounded is applied */
-  .indigo-rounded.border {
-    border: none;
-  }
-
-  .indigo-rounded [type="text"]:focus,
-  .indigo-rounded [type="email"]:focus,
-  .indigo-rounded [type="url"]:focus,
-  .indigo-rounded [type="password"]:focus,
-  .indigo-rounded [type="number"]:focus,
-  .indigo-rounded [type="date"]:focus,
-  .indigo-rounded [type="datetime-local"]:focus,
-  .indigo-rounded [type="month"]:focus,
-  .indigo-rounded [type="search"]:focus,
-  .indigo-rounded [type="tel"]:focus,
-  .indigo-rounded [type="time"]:focus,
-  .indigo-rounded [type="week"]:focus,
-  .indigo-rounded [multiple]:focus,
-  .indigo-rounded select:focus,
-  .indigo-rounded textarea:focus {
-    outline: none;
-    border-color: rgb(var(--form-border));
-    box-shadow: 0 0 0 3px rgb(var(--form-ring) / 0.5);
-  }
-
-  .indigo-rounded [type="checkbox"] {
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(161, 161, 170); /* gray-300 equivalent */
-    border-radius: 0.25rem; /* rounded utility */
-    color: rgb(79, 70, 229); /* text-indigo-600 */
-    @apply focus:ring-indigo-500; /* We can still apply the focus ring */
-    appearance: none;
-    width: 1rem;
-    height: 1rem;
-    cursor: pointer;
-    margin-right: 0.5rem; /* Add spacing between checkbox and label */
-  }
-
-  /* Checked state styling */
-  .indigo-rounded [type="checkbox"]:checked {
-    background-color: rgb(79, 70, 229);
-    border-color: rgb(79, 70, 229);
-  }
-
-  /* Button styling */
-  .indigo-rounded button {
-    border-radius: var(--radius);
-    background-color: rgb(var(--background-color));
-    border: none;
-    transition: background-color 0.3s, box-shadow 0.3s;
-  }
-
-  .indigo-rounded button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(var(--form-ring) / 0.5);
   }
 }

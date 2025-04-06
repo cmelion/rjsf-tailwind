@@ -139,57 +139,13 @@ export default {
       'ui:readonly': true,
     },
     widgetOptions: {
-      'ui:widget': ({
-        value,
-        onChange,
-        options,
-      }: {
-        value: any;
-        onChange: (value: any) => void;
-        options: { backgroundColor: string };
-      }) => {
-        const { backgroundColor } = options;
-        return (
-          <input
-            className='form-control'
-            onChange={(event) => onChange(event.target.value)}
-            style={{ backgroundColor }}
-            value={value}
-          />
-        );
-      },
+      'ui:widget': 'ColoredInputWidget',
       'ui:options': {
         backgroundColor: 'yellow',
       },
     },
     selectWidgetOptions: {
-      'ui:widget': ({
-        value,
-        onChange,
-        options,
-      }: {
-        value: any;
-        onChange: (value: any) => void;
-        options: { enumOptions: { label: string; value: any }[]; backgroundColor: string };
-      }) => {
-        const { enumOptions, backgroundColor } = options;
-        return (
-          <select
-            className='form-control'
-            style={{ backgroundColor }}
-            value={value}
-            onChange={(event) => onChange(event.target.value)}
-          >
-            {enumOptions.map(({ label, value }, i) => {
-              return (
-                <option key={i} value={value}>
-                  {label}
-                </option>
-              );
-            })}
-          </select>
-        );
-      },
+      'ui:widget': 'ColoredSelectWidget',
       'ui:options': {
         backgroundColor: 'pink',
       },

@@ -387,9 +387,9 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@8.57.1":
-  version "8.57.1"
-  resolved "8.57.1"
+"@eslint/js@9.24.0":
+  version "9.24.0"
+  resolved "9.24.0"
 
 "@floating-ui/core@^1.6.0":
   version "1.6.9"

@@ -1,3 +1,4 @@
+import TableView from "@/components/table-view"
 import TailwindForm from "@/components/rjsf"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -6,6 +7,8 @@ import generateSchema from "generate-schema"
 import { useRoutes } from "react-router-dom"
 import { FormStyleProvider, useFormStyle } from "./components/form-style-provider"
 import { FormStyleToggle } from "./components/form-style-toggle"
+import { ViewModeProvider, useViewMode } from "./components/view-mode-provider"
+import { ViewModeToggle } from "./components/view-mode-toggle"
 import JsonEditor from "./components/json-editor"
 import Samples from "./components/samples"
 import { TailwindIndicator } from "./components/tailwind-indicator"
@@ -48,6 +51,8 @@ function Home() {
   } = useStore(selector)
 
   const { formStyle } = useFormStyle()
+
+  const { viewMode } = useViewMode()
 
   const handleSchemaChange = (value: string) => {
     try {
@@ -210,7 +215,15 @@ function Home() {
               </div>
             </div>
             <div className="col-span-2 grid items-start gap-6 lg:col-span-1">
-              <ResponsiveContainer heading="Tailwind Form" actions={<FormStyleToggle />}>
+              <ResponsiveContainer
+                heading="Tailwind Form"
+                actions={
+                  <>
+                    <FormStyleToggle />
+                    <ViewModeToggle />
+                  </>
+                }
+              >
                 <div className="flex flex-col">
                   <div
                     className={`border ${formStyle}`}
@@ -218,16 +231,21 @@ function Home() {
                       padding: 20,
                     }}
                   >
-                    <TailwindForm
-                      noHtml5Validate
-                      schema={schema}
-                      uiSchema={uiSchema}
-                      formData={formData}
-                      validator={validator}
-                      onChange={(data: any) => {
-                        updateFormData(data.formData)
-                      }}
-                    />
+
+                    {viewMode === 'form' ? (
+                      <TailwindForm
+                        noHtml5Validate
+                        schema={schema}
+                        uiSchema={uiSchema}
+                        formData={formData}
+                        validator={validator}
+                        onChange={(data: any) => {
+                          updateFormData(data.formData)
+                        }}
+                      />
+                    ) : (
+                      <TableView />
+                    )}
                   </div>
                 </div>
               </ResponsiveContainer>
@@ -245,11 +263,13 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <FormStyleProvider>
+        <ViewModeProvider>
         <div className="relative flex min-h-screen flex-col">
           <SiteHeader />
           <div className="flex-1">{children}</div>
         </div>
         <TailwindIndicator />
+        </ViewModeProvider>
       </FormStyleProvider>
     </ThemeProvider>
   )

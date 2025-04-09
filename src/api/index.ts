@@ -1,2 +1,2 @@
-// src/api/index.tsx
+// src/api/index.ts
 export * from './samples';

@@ -1,6 +1,6 @@
 // src/components/JsonEditor.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import JsonEditor from './index.tsx';
+import JsonEditor from './index.ts';
 
 const meta: Meta<typeof JsonEditor> = {
   title: 'Components/JsonEditor',
@@ -26,8 +26,8 @@ type Story = StoryObj<typeof JsonEditor>;
 
 const ResponsiveContainer = ({ heading, children }: any) => {
   return (
-    <div className="flex items-center justify-center [&>div]:w-full h-full">
-      <div className="overflow-hidden bg-background sm:rounded-t-lg w-full h-full">
+    <div className="flex h-full items-center justify-center [&>div]:w-full">
+      <div className="size-full overflow-hidden bg-background sm:rounded-t-lg">
         <div className="flex items-center justify-between border bg-background px-4 py-5 sm:rounded-t-lg sm:px-6">
           <h3 className="text-base font-semibold leading-6">{heading}</h3>
         </div>

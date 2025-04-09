@@ -1,5 +1,5 @@
 // src/components/tailwind-table/TailwindTable.tsx
-import { useMemo, useState } from "react"
+import { useMemo, useState, useCallback } from "react"
 import {
     ColumnDef,
     flexRender,
@@ -41,30 +41,31 @@ export default function TailwindTable({
     const [newRowData, setNewRowData] = useState({})
 
     // Define all handler functions before they're referenced
-    const toggleRowExpanded = (rowId: string) => {
+
+    const toggleRowExpanded = useCallback((rowId: string) => {
         setExpandedRows(prev => ({
             ...prev,
             [rowId]: !prev[rowId]
         }))
-    }
+    }, []);
 
-    const handleDeleteRow = (index: number) => {
+    const handleDeleteRow = useCallback((index: number) => {
         const updatedData = [...formData]
         updatedData.splice(index, 1)
         onChange(updatedData)
-    }
+    }, [formData, onChange]);
 
-    const handleRowChange = (index: number, updatedRowData: any) => {
+    const handleRowChange = useCallback((index: number, updatedRowData: any) => {
         const updatedData = [...formData]
         updatedData[index] = updatedRowData
         onChange(updatedData)
-    }
+    }, [formData, onChange]);
 
-    const handleCreateRow = (data: any) => {
+    const handleCreateRow = useCallback((data: any) => {
         onChange([...formData, data.formData])
         setIsCreating(false)
         setNewRowData({})
-    }
+    }, [formData, onChange]);
 
     // Generate columns from schema properties
     const columns = useMemo<ColumnDef<any>[]>(() => {
@@ -122,7 +123,7 @@ export default function TailwindTable({
                 ),
             },
         ]
-    }, [columns, expandedRows])
+    }, [columns, expandedRows, handleDeleteRow, toggleRowExpanded])
 
     const table = useReactTable({
         data: formData,

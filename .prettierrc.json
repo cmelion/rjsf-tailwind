@@ -15,6 +15,12 @@
 			}
 		}
 	],
+	"importOrder": [
+		"<THIRD_PARTY_MODULES>",
+		"^(?!@/).+",
+		"^@/",
+		"^[./]"
+	],
 	"importOrderSeparation": false,
 	"importOrderSortSpecifiers": true,
 	"importOrderBuiltinModulesToTop": true,

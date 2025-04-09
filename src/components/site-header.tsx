@@ -1,5 +1,5 @@
 import { MainNav } from "@/components/main-nav"
-import { ModeToggle } from "@/components/mode-toggle"
+import { ThemeToggle } from "@/components/providers/theme/"
 import { siteConfig } from "@/config/site"
 import { GithubIcon } from "lucide-react"
 
@@ -20,7 +20,7 @@ export function SiteHeader() {
             >
               <GithubIcon className="h-6 w-6" />
             </a>
-            <ModeToggle />
+            <ThemeToggle />
           </nav>
         </div>
       </div>

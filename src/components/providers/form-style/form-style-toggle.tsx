@@ -1,5 +1,5 @@
 // src/components/form-style-toggle.tsx
-import { useFormStyle } from "./form-style-provider"
+import { useFormStyle } from "./form-style-provider.tsx"
 
 export function FormStyleToggle() {
   const { formStyle, setFormStyle } = useFormStyle()

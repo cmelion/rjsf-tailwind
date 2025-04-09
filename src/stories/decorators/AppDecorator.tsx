@@ -1,6 +1,6 @@
 // src/stories/decorators/AppDecorator.tsx
 import React from 'react';
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme/theme-provider.tsx";
 import { MemoryRouter as Router } from 'react-router-dom';
 
 interface StorybookAppDecoratorProps {

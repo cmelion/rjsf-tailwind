@@ -1,6 +1,6 @@
 // src/components/JsonEditor.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import JsonEditor from './json-editor';
+import JsonEditor from './index.tsx';
 
 const meta: Meta<typeof JsonEditor> = {
   title: 'Components/JsonEditor',

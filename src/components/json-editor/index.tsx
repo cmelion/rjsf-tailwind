@@ -1,6 +1,6 @@
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api"
 import { useEffect, useRef } from "react"
-import "../userWorker"
+import "../../userWorker.ts"
 
 type EditorProps = {
   editorId: string

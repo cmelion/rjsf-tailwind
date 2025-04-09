@@ -1,4 +1,4 @@
-// src/templates/index.ts
+// src/templates/index.tsx
 import {
   getTemplate,
   getUiOptions,

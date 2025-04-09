@@ -1,5 +1,5 @@
-// src/components/view-mode-toggle.tsx
-import { useViewMode } from "./view-mode-provider"
+// src/components/view-theme-toggle.tsx
+import { useViewMode } from "./view-mode-provider.tsx"
 
 export function ViewModeToggle() {
   const { viewMode, toggleViewMode } = useViewMode()

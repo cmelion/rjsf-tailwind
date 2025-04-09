@@ -1,5 +1,5 @@
 // src/components/tailwind-table/TailwindTable.tsx
-import { useMemo, useState, useCallback } from "react"
+import { Fragment, useMemo, useState, useCallback } from "react"
 import {
     ColumnDef,
     flexRender,
@@ -39,6 +39,8 @@ export default function TailwindTable({
     const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
     const [isCreating, setIsCreating] = useState(false)
     const [newRowData, setNewRowData] = useState({})
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+    const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false)
 
     // Define all handler functions before they're referenced
 
@@ -146,54 +148,78 @@ export default function TailwindTable({
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Data Table</h2>
                 <div className="flex items-center space-x-2">
+                    {/* Create New Record */}
                     <button
                         onClick={() => setIsCreating(prev => !prev)}
                         className="inline-flex items-center rounded bg-primary px-3 py-2 text-sm text-primary-foreground hover:bg-primary/90"
                     >
                         <FiPlus className="mr-1" /> Add New
                     </button>
-                    <div className="dropdown dropdown-end">
-                        <button className="rounded border px-3 py-2 text-sm">Columns</button>
-                        <div className="dropdown-content z-10 min-w-[200px] rounded-md bg-background p-1 shadow-md">
-                            {table.getAllColumns().map(column => {
-                                return column.id !== 'actions' ? (
-                                    <div key={column.id} className="px-2 py-1">
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={column.getIsVisible()}
-                                                onChange={column.getToggleVisibilityHandler()}
-                                                className="mr-2"
-                                            />
-                                            {column.id}
-                                        </label>
-                                    </div>
-                                ) : null
-                            })}
-                        </div>
+                    {/* Column Selector */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}
+                            className="rounded border px-3 py-2 text-sm flex items-center"
+                        >
+                            Columns {isColumnSelectorOpen ? <FiChevronUp className="ml-1" /> : <FiChevronDown className="ml-1" />}
+                        </button>
+
+                        {isColumnSelectorOpen && (
+                            <div className="absolute right-0 top-full mt-1 z-10 min-w-[200px] rounded-md bg-background p-2 shadow-md border">
+                                {table.getAllColumns().map(column => {
+                                    return column.id !== 'actions' ? (
+                                        <div key={column.id} className="px-2 py-1">
+                                            <label className="flex items-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={column.getIsVisible()}
+                                                    onChange={column.getToggleVisibilityHandler()}
+                                                    className="mr-2"
+                                                />
+                                                {column.id}
+                                            </label>
+                                        </div>
+                                    ) : null
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
 
-            {/* Column Filters */}
-            <div className="flex flex-wrap gap-2">
-                {table.getHeaderGroups()[0].headers.map(header => {
-                    const column = header.column
-                    if (column.id !== 'actions' && column.getCanFilter()) {
-                        return (
-                            <div key={column.id} className="w-48">
-                                <input
-                                    type="text"
-                                    placeholder={`Filter ${column.id}...`}
-                                    value={(column.getFilterValue() as string) ?? ''}
-                                    onChange={e => column.setFilterValue(e.target.value)}
-                                    className="w-full rounded-md border px-3 py-1 text-sm"
-                                />
-                            </div>
-                        )
-                    }
-                    return null
-                })}
+            {/* Column Filters Accordion */}
+            <div className="border-b">
+                <button
+                    onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+                    className="flex w-full items-center justify-between px-4 py-2 text-left text-sm font-medium bg-muted"
+                >
+                    <span>Column Filters</span>
+                    {isFiltersOpen ? <FiChevronUp /> : <FiChevronDown />}
+                </button>
+
+                {isFiltersOpen && (
+                    <div className="px-4 py-3 border-b bg-background">
+                        <div className="flex flex-wrap gap-2">
+                            {table.getHeaderGroups()[0].headers.map(header => {
+                                const column = header.column
+                                if (column.id !== 'actions' && column.getCanFilter()) {
+                                    return (
+                                        <div key={column.id} className="w-48">
+                                            <input
+                                                type="text"
+                                                placeholder={`Filter ${column.id}...`}
+                                                value={(column.getFilterValue() as string) ?? ''}
+                                                onChange={e => column.setFilterValue(e.target.value)}
+                                                className="w-full rounded-md border px-3 py-1 text-sm bg-background text-foreground placeholder:text-muted-foreground"
+                                            />
+                                        </div>
+                                    )
+                                }
+                                return null
+                            })}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Create Form */}
@@ -256,12 +282,9 @@ export default function TailwindTable({
                     </thead>
                     <tbody className="divide-y">
                     {table.getRowModel().rows.length ? (
-                        table.getRowModel().rows.map(row => (
-                            <>
-                                <tr
-                                    key={row.id}
-                                    className="hover:bg-muted/50"
-                                >
+                        table.getRowModel().rows.map((row, index) => (
+                            <Fragment key={row.id || `row-${index}`}>
+                                <tr className="hover:bg-muted/50">
                                     {row.getVisibleCells().map(cell => (
                                         <td key={cell.id} className="px-4 py-2 text-sm">
                                             {flexRender(
@@ -272,7 +295,7 @@ export default function TailwindTable({
                                     ))}
                                 </tr>
                                 {expandedRows[row.id] && (
-                                    <tr key={`${row.id}-expanded`}>
+                                    <tr>
                                         <td colSpan={row.getVisibleCells().length} className="bg-muted/20 p-4">
                                             <div className="rounded border border-border bg-card p-4">
                                                 <h3 className="mb-2 text-lg font-medium">Edit Record</h3>
@@ -287,7 +310,7 @@ export default function TailwindTable({
                                         </td>
                                     </tr>
                                 )}
-                            </>
+                            </Fragment>
                         ))
                     ) : (
                         <tr>

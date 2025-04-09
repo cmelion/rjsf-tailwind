@@ -212,7 +212,7 @@ function Home() {
                     heading="Form Data"
                     actions={
                       <button
-                        className="rounded bg-primary px-3 py-1 text-sm text-primary-foreground hover:bg-primary/90"
+                        className="default-button"
                         onClick={handleGenerateSchemaFromData}
                         title="Generate schema from data"
                       >

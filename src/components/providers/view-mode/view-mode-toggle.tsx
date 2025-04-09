@@ -7,7 +7,7 @@ export function ViewModeToggle() {
   return (
     <button
       onClick={toggleViewMode}
-      className="rounded bg-primary/90 px-3 py-1 text-sm text-primary-foreground hover:bg-primary"
+      className="default-button"
     >
       {viewMode === "form" ? "Switch to Table View" : "Switch to Form View"}
     </button>

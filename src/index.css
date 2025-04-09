@@ -59,3 +59,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .default-button {
+    @apply rounded border px-3 py-2 text-sm flex items-center
+  }
+  /* On hover, increase brightness */
+  .default-button:hover {
+    filter: brightness(1.3);
+  }
+}

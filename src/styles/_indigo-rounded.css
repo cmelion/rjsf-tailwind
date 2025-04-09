@@ -117,8 +117,4 @@
         box-shadow: 0 0 0 3px rgb(var(--ir-primary) / var(--ir-focus-ring-opacity));
     }
 
-    /* Button hover state */
-    .indigo-rounded button:hover {
-        background-color: rgb(var(--ir-primary) / 0.9);
-    }
 }

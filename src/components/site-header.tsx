@@ -2,6 +2,7 @@ import { MainNav } from "@/components/main-nav"
 import { ThemeToggle } from "@/components/providers/theme/"
 import { siteConfig } from "@/config/site"
 import { GithubIcon } from "lucide-react"
+import {Icons} from "@/components/icons"
 
 export function SiteHeader() {
   return (
@@ -19,6 +20,16 @@ export function SiteHeader() {
               className="p-2 text-foreground/60 transition-colors hover:text-foreground"
             >
               <GithubIcon className="size-6" />
+            </a>
+            <a
+                href="https://cmelion.github.io/rjsf-tailwind/storybook/"
+                target="_blank"
+                rel="noreferrer"
+                title="View Storybook"
+                aria-label="Storybook"
+                className="p-2 text-foreground/60 transition-colors hover:text-foreground"
+            >
+              <Icons.storybook className="size-6" />
             </a>
             <ThemeToggle />
           </nav>

@@ -6,17 +6,18 @@ type EditorProps = {
     editorId: string
     jsonData?: object
     onChange?: (newValue: string) => void
+    editorOptions?: monaco.editor.IEditorOptions
 }
 
 export default function JsonEditor({
                                        editorId,
-                                       jsonData = {}, // Provide default empty object
+                                       jsonData = {},
                                        onChange,
+                                       editorOptions = {},
                                    }: EditorProps) {
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
 
     useEffect(() => {
-        // Create editor if not already initialized
         if (!editorRef.current) {
             const editorElement = document.getElementById(editorId)
             if (editorElement) {
@@ -24,14 +25,12 @@ export default function JsonEditor({
                     value: JSON.stringify(jsonData, null, 2),
                     language: "json",
                     theme: "vs-dark",
+                    ...editorOptions,
                 })
             }
         }
 
-        // make it easier to work with the editor instance within the useEffect hook
         const editor = editorRef.current
-
-        // If the editor failed to initialize, exit early
         if (!editor) return
 
         // Update editor content when jsonData changes
@@ -46,13 +45,12 @@ export default function JsonEditor({
             onChange?.(editor.getValue())
         })
 
-        // Cleanup function to dispose of resources when the component unmounts or dependencies change
         return () => {
             disposable.dispose()
             editor.dispose()
             editorRef.current = undefined
         }
-    }, [editorId, jsonData, onChange])
+    }, [editorId, jsonData, onChange, editorOptions])
 
     return <div id={editorId} style={{ flex: 1, overflow: "auto" }} />
 }

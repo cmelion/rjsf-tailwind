@@ -205,6 +205,10 @@ function Home() {
                         editorId="uiSchemaEditorContainer"
                         jsonData={uiSchema}
                         onChange={handleUiSchemaChange}
+                        editorOptions={{
+                          minimap: { enabled: false },
+                          automaticLayout: true
+                        }}
                       />
                     </div>
                   </ResponsiveContainer>
@@ -225,6 +229,10 @@ function Home() {
                         editorId="formDataEditorContainer"
                         jsonData={formData}
                         onChange={handleFormDataChange}
+                        editorOptions={{
+                          minimap: { enabled: false },
+                          automaticLayout: true
+                        }}
                       />
                     </div>
                   </ResponsiveContainer>

@@ -18,7 +18,7 @@ export function SiteHeader() {
               aria-label="GitHub"
               className="p-2 text-foreground/60 transition-colors hover:text-foreground"
             >
-              <GithubIcon className="h-6 w-6" />
+              <GithubIcon className="size-6" />
             </a>
             <ThemeToggle />
           </nav>

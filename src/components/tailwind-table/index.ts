@@ -1,2 +1,2 @@
-export { default } from './TailWindTable';
-export * from './TailWindTable';
+export { default } from './TailwindTable.tsx';
+export * from './TailwindTable.tsx';

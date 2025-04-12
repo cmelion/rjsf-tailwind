@@ -4,7 +4,7 @@ import { RJSFSchema } from "@rjsf/utils"
 import TailwindForm from "@/components/rjsf"
 import validator from "@rjsf/validator-ajv8"
 import { IChangeEvent } from "@/components/rjsf/Form/Form"
-import { createElement } from "react"
+import { createElement, useId } from "react"
 
 interface CreateRowFormProps {
   schema: JSONSchema7 | RJSFSchema
@@ -23,6 +23,9 @@ export function CreateRowForm({
                                 onSubmit,
                                 onClose,
                               }: CreateRowFormProps) {
+  const formId = useId();
+  const titleId = useId();
+
   // Create strongly typed props
   const formProps = {
     schema: schema as RJSFSchema,
@@ -30,16 +33,37 @@ export function CreateRowForm({
     formData,
     validator,
     onChange: (e: IChangeEvent) => setFormData(e.formData),
-    onSubmit
+    onSubmit,
+    // Add custom UI options to improve accessibility
+    uiOptions: {
+      ...(uiSchema?.["ui:options"] || {}),
+      submitButtonOptions: {
+        props: {
+          "aria-label": "Create record"
+        }
+      }
+    },
+    id: formId
   };
 
   return (
-    <div className="rounded-lg border p-4">
+    <div
+      className="rounded-lg border p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+    >
       <div className="mb-2 flex justify-between">
-        <h3 className="text-lg font-medium">Create New Record</h3>
+        <h3
+          id={titleId}
+          className="text-lg font-medium"
+        >
+          Create New Record
+        </h3>
         <button
           onClick={onClose}
           className="text-muted-foreground hover:text-foreground"
+          aria-label="Close form"
         >
           ✕
         </button>

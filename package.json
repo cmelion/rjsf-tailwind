@@ -13,7 +13,8 @@
     "test:bdd": "npx bddgen && npx playwright test",
     "test:bdd:generate": "npx bddgen",
     "test:bdd:run": "npx playwright test",
-    "test:bdd:ui": "npx bddgen && npx playwright test --ui"
+    "test:bdd:ui": "npx bddgen && concurrently \"yarn test:bdd:watch\" \"npx playwright test --ui\"",
+    "test:bdd:watch": "chokidar \"**/*.steps.js\" \"**/*.feature\" -c \"yarn test:bdd:generate\""
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -57,6 +58,7 @@
     "@vitest/browser": "^3.1.1",
     "@vitest/coverage-v8": "^3.1.1",
     "autoprefixer": "^10.4.16",
+    "chokidar-cli": "^3.0.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react-hooks": "^4.6.0",

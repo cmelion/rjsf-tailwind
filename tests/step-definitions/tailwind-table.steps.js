@@ -8,8 +8,8 @@ const { Given, When, Then } = createBdd();
 const navigateToStory = async ({ page }, storyId = 'default') => {
   const storyPath = `/iframe.html?args=&id=components-tailwindtable--${storyId.toLowerCase()}&viewMode=story`;
   await page.goto(storyPath);
-  // Use a more specific selector that targets only the data table
-  await page.waitForSelector('table.w-full.divide-y', { state: 'visible' });
+  // Use getByRole instead of CSS selector
+  await page.getByRole('table', { name: 'Data records table' }).waitFor({ state: 'visible' });
 };
 
 // Background steps
@@ -27,20 +27,32 @@ When('I view the table', async ({ page }) => {
 });
 
 Then('I should see column headers based on the schema properties', async ({ page }) => {
-  const headers = await page.$$('thead th');
+  // Use getByRole to find column headers
+  const headers = await page.getByRole('columnheader').all();
   expect(headers.length).toBeGreaterThan(0);
 });
 
 Then('I should see rows displaying my data', async ({ page }) => {
-  const rows = await page.$$('tbody tr');
-  expect(rows.length).toBeGreaterThan(0);
+  // Use getByRole to find rows
+  const rows = await page.getByRole('row').all();
+  // Subtract header row
+  expect(rows.length - 1).toBeGreaterThan(0);
 });
 
 Then('each row should have action buttons', async ({ page }) => {
-  const firstRow = await page.$('tbody tr:first-child');
-  if (!firstRow) {
-    throw new Error('No table rows found');
-  }
-  const actionButtons = await firstRow.$$('button');
-  expect(actionButtons.length).toBeGreaterThan(0);
+  // Get the first data row (skip header row)
+  const dataRows = await page.getByRole('row').all();
+  const firstDataRow = dataRows[1]; // Skip header row
+
+  // Find buttons by their accessible attributes
+  const expandButton = await firstDataRow.getByRole('button', {
+    name: /collapse row|expand row/i
+  });
+
+  const deleteButton = await firstDataRow.getByRole('button', {
+    name: 'Delete row'
+  });
+
+  expect(expandButton).toBeTruthy();
+  expect(deleteButton).toBeTruthy();
 });

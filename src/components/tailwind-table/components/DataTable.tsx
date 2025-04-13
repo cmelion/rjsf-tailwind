@@ -17,13 +17,13 @@ interface DataTableProps {
 }
 
 export function DataTable({
-                            table,
-                            expandedRows,
-                            handleRowChange,
-                            schema,
-                            uiSchema,
-                            columnsLength,
-                          }: DataTableProps) {
+  table,
+  expandedRows,
+  handleRowChange,
+  schema,
+  uiSchema,
+  columnsLength,
+}: DataTableProps) {
   const tableId = useId();
   const captionId = useId();
 

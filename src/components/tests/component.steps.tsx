@@ -50,6 +50,7 @@ Then('I should see column headers based on the schema properties', async (world:
   //console.log('Container HTML:', container.innerHTML);
   //console.log('Found headers:', headers.length);
 
+  // Webstorm only Type issue?  see https://github.com/vitest-dev/vitest/issues/6241#issuecomment-2257734130
   expect(headers.length).toBeGreaterThan(0);
 });
 

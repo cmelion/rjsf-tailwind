@@ -17,13 +17,13 @@ interface DataTableProps {
 }
 
 export function DataTable({
-  table,
-  expandedRows,
-  handleRowChange,
-  schema,
-  uiSchema,
-  columnsLength,
-}: DataTableProps) {
+                            table,
+                            expandedRows,
+                            handleRowChange,
+                            schema,
+                            uiSchema,
+                            columnsLength,
+                          }: DataTableProps) {
   const tableId = useId();
   const captionId = useId();
 
@@ -33,11 +33,12 @@ export function DataTable({
         id={tableId}
         className="w-full divide-y"
         aria-labelledby={captionId}
+        role="grid"
       >
         <caption id={captionId} className="sr-only">Data records table</caption>
         <thead className="bg-muted">
         {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
+          <tr key={headerGroup.id} role="row">
             {headerGroup.headers.map((header) => {
               const isSorted = header.column.getIsSorted();
 
@@ -46,6 +47,7 @@ export function DataTable({
                   key={header.id}
                   className="px-4 py-2 text-left text-sm font-medium"
                   scope="col"
+                  role="columnheader"
                   aria-sort={isSorted ? (isSorted === "asc" ? "ascending" : "descending") : "none"}
                 >
                   {header.isPlaceholder ? null : (
@@ -78,13 +80,13 @@ export function DataTable({
           </tr>
         ))}
         </thead>
-        <tbody className="divide-y">
+        <tbody className="divide-y" role="rowgroup">
         {table.getRowModel().rows.length ? (
           table.getRowModel().rows.map((row, index) => (
             <Fragment key={row.id || `row-${index}`}>
-              <tr className="hover:bg-muted/50">
+              <tr className="hover:bg-muted/50" role="row">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-2 text-sm">
+                  <td key={cell.id} className="px-4 py-2 text-sm" role="cell">
                     {flexRender(
                       cell.column.columnDef.cell,
                       cell.getContext(),
@@ -93,10 +95,11 @@ export function DataTable({
                 ))}
               </tr>
               {expandedRows[row.id] && (
-                <tr aria-label="Edit form row">
+                <tr aria-label="Edit form row" role="row">
                   <td
                     colSpan={row.getVisibleCells().length}
                     className="bg-muted/20 p-4"
+                    role="cell"
                   >
                     <EditRowForm
                       schema={schema}
@@ -111,10 +114,11 @@ export function DataTable({
             </Fragment>
           ))
         ) : (
-          <tr>
+          <tr role="row">
             <td
               colSpan={columnsLength}
               className="px-4 py-8 text-center text-muted-foreground"
+              role="cell"
             >
               No records found
             </td>

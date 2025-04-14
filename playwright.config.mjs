@@ -17,7 +17,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   reporter: [
-    ['html'],
+    ['list', { printSteps: true }],
+    ['html', {outputFile: 'playwright-report/report.html'}]
     // cucumberReporter('html', { outputFile: 'cucumber-report/report.html' })
   ],
   projects: [

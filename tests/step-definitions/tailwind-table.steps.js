@@ -9,7 +9,7 @@ const navigateToStory = async ({ page }, storyId = 'default') => {
   const storyPath = `/iframe.html?args=&id=components-tailwindtable--${storyId.toLowerCase()}&viewMode=story`;
   await page.goto(storyPath);
   // Use getByRole instead of CSS selector
-  await page.getByRole('table', { name: 'Data records table' }).waitFor({ state: 'visible' });
+  await page.getByRole('grid', { name: 'Data records table' }).waitFor({ state: 'visible' });
 };
 
 // Background steps

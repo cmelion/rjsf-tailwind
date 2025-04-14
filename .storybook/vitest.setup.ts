@@ -1,9 +1,16 @@
-import { beforeAll } from 'vitest';
-import { setProjectAnnotations } from '@storybook/react';
-import * as projectAnnotations from './preview';
+// .storybook/vitest.setup.ts
+import { expect, vi } from 'vitest';
 
-// This is an important step to apply the right configuration when testing your stories.
-// More info at: https://storybook.js.org/docs/api/portable-stories/portable-stories-vitest#setprojectannotations
-const project = setProjectAnnotations([projectAnnotations]);
+// Make test utilities available globally
+globalThis.expect = expect;
+globalThis.vi = vi;
 
-beforeAll(project.beforeAll);
+// If needed, add explicit type declarations
+declare global {
+  namespace Vi {
+    interface Assertion {
+      toBeGreaterThan(expected: number): void;
+      // Add other matchers if needed
+    }
+  }
+}

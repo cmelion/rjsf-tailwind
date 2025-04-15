@@ -28,7 +28,7 @@ Given('I have some initial data records', async (world: TestWorld) => {
 // Action steps
 When('I view the table', async (world: TestWorld) => {
   // Get the appropriate story component based on the storyName
-  const Story = stories[world.storyName];
+  const Story = stories[world.storyName as keyof typeof stories];
 
   if (!Story) {
     throw new Error(`Story "${world.storyName}" not found in TailwindTable stories`);

@@ -1,18 +1,21 @@
-// src/components/tailwind-table/components/CreateRowForm.tsx
-import { JSONSchema7 } from "json-schema"
-import { RJSFSchema } from "@rjsf/utils"
-import TailwindForm from "@/components/rjsf"
-import validator from "@rjsf/validator-ajv8"
-import { IChangeEvent } from "@/components/rjsf/Form/Form"
-import { createElement, useId } from "react"
+import { JSONSchema7 } from "json-schema";
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import TailwindForm from "@/components/rjsf";
+import validator from "@rjsf/validator-ajv8";
+import { IChangeEvent } from "@/components/rjsf/Form/Form";
+import { createElement, useId } from "react";
 
 interface CreateRowFormProps {
-  schema: JSONSchema7 | RJSFSchema
-  uiSchema?: object
-  formData: any
-  setFormData: (data: any) => void
-  onSubmit: (data: IChangeEvent) => void
-  onClose: () => void
+  schema: JSONSchema7 | RJSFSchema;
+  uiSchema?: UiSchema & {
+    "ui:options"?: {
+      [key: string]: unknown; // Define specific keys here if types are known
+    };
+  };
+  formData: any;
+  setFormData: (data: any) => void;
+  onSubmit: (data: IChangeEvent) => void;
+  onClose: () => void;
 }
 
 export function CreateRowForm({
@@ -39,11 +42,11 @@ export function CreateRowForm({
       ...(uiSchema?.["ui:options"] || {}),
       submitButtonOptions: {
         props: {
-          "aria-label": "Create record"
-        }
-      }
+          "aria-label": "Create record",
+        },
+      },
     },
-    id: formId
+    id: formId,
   };
 
   return (
@@ -54,10 +57,7 @@ export function CreateRowForm({
       aria-labelledby={titleId}
     >
       <div className="mb-2 flex justify-between">
-        <h3
-          id={titleId}
-          className="text-lg font-medium"
-        >
+        <h3 id={titleId} className="text-lg font-medium">
           Create New Record
         </h3>
         <button
@@ -70,5 +70,5 @@ export function CreateRowForm({
       </div>
       {createElement(TailwindForm, formProps as any)}
     </div>
-  )
+  );
 }

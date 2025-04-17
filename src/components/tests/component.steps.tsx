@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 // src/components/tests/component.steps.ts
 import { Given, When, Then } from 'quickpickle';
-import { render } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { composeStories } from '@storybook/react';
 import { expect } from 'vitest';
 import * as TailwindTableStories from '../tailwind-table/TailwindTable.stories';
@@ -37,42 +37,52 @@ When('I view the table', async (world: TestWorld) => {
   // Render the component inside a test-friendly environment
   const { container } = render(<Story />);
   world.component = { container };
-
 });
 
 // Assertion steps
-Then('I should see column headers based on the schema properties', async (world: TestWorld) => {
-  const { container } = world.component;
-
-  const headers = container.querySelectorAll('[role="columnheader"]');
-
-  // Debug output if needed
-  //console.log('Container HTML:', container.innerHTML);
-  //console.log('Found headers:', headers.length);
-
-  // Webstorm only Type issue?  see https://github.com/vitest-dev/vitest/issues/6241#issuecomment-2257734130
+Then('I should see column headers based on the schema properties', async () => {
+  // Use screen query with the role that matches the DataTable component
+  const headers = screen.getAllByRole('columnheader', {});
   expect(headers.length).toBeGreaterThan(0);
 });
 
-Then('I should see rows displaying my data', async (world: TestWorld) => {
-  const { container } = world.component;
-  const rows = container.querySelectorAll('tbody > tr[role="row"]');
-  expect(rows.length).toBeGreaterThan(0);
+Then('I should see rows displaying my data', async () => {
+  // First find the table with the correct label
+  const table = screen.getByRole('grid', { name: 'Data records table' });
+
+  // Get all rows in the table
+  const allRows = within(table).getAllByRole('row', {});
+
+  // The first row is likely the header row, so we'll skip it to get data rows
+  const dataRows = allRows.filter(row => {
+    // A data row shouldn't contain columnheader elements
+    return within(row).queryAllByRole('columnheader', {}).length === 0;
+  });
+
+  expect(dataRows.length).toBeGreaterThan(0);
 });
 
+Then('each row should have action buttons', async () => {
+  // First find the table with the correct label
+  const table = screen.getByRole('grid', { name: 'Data records table' });
 
-Then('each row should have action buttons', async (world: TestWorld) => {
-  const { container } = world.component;
-  const rows = container.querySelectorAll('tbody > tr[role="row"]');
+  // Get all rows in the table
+  const allRows = within(table).getAllByRole('row', {});
 
-  // Skip this test if there are no rows
-  if (rows.length === 0) {
-    console.warn('No rows found to check for action buttons');
+  // Filter to data rows (those without columnheaders)
+  const dataRows = allRows.filter(row => {
+    return within(row).queryAllByRole('columnheader', {}).length === 0;
+  });
+
+  // Skip this test if there are no data rows
+  if (dataRows.length === 0) {
+    console.warn('No data rows found to check for action buttons');
     return;
   }
 
-  // Check for buttons in at least one row
-  const firstRow = rows[0];
-  const actionButtons = firstRow.querySelectorAll('button, [role="button"]');
-  expect(actionButtons.length).toBeGreaterThan(0);
+  // Check that EACH row has action buttons
+  for (const row of dataRows) {
+    const actionButtons = within(row).getAllByRole('button', {});
+    expect(actionButtons.length).toBeGreaterThan(0);
+  }
 });

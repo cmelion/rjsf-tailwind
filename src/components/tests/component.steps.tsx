@@ -10,6 +10,7 @@ import * as TailwindTableStories from '../tailwind-table/TailwindTable.stories';
 type TestWorld = {
   storyName: string;
   component: any;
+  schema?: any;
 };
 
 // Compose the stories for direct testing
@@ -34,17 +35,42 @@ When('I view the table', async (world: TestWorld) => {
     throw new Error(`Story "${world.storyName}" not found in TailwindTable stories`);
   }
 
+  // Store the schema from the story in the world object
+  world.schema = Story.args.schema;
+
   // Render the component inside a test-friendly environment
   const { container } = render(<Story />);
   world.component = { container };
 });
 
+
 // Assertion steps
-Then('I should see column headers based on the schema properties', async () => {
-  // Use screen query with the role that matches the DataTable component
+Then('I should see column headers based on the schema properties', async (world: TestWorld) => {
+  // Access schema from the world object
+  const schema = world.schema;
+
+  // Validate that we have a schema to work with
+  if (!schema || !schema.properties) {
+    throw new Error('Schema not found in the test context. Make sure it was set in a previous step.');
+  }
+
+  // Rest of your code remains the same
+  const additionalColumns = 1; // actions column
+  const expectedProperties = Object.keys(schema.properties);
   const headers = screen.getAllByRole('columnheader', {});
   expect(headers.length).toBeGreaterThan(0);
+  expect(headers.length).toEqual(expectedProperties.length + additionalColumns);
+
+  expectedProperties.forEach(propName => {
+    const headerWithText = headers.find(header =>
+      header.textContent?.includes(propName) ||
+      header.textContent?.includes(schema.properties[propName].title || propName)
+    );
+    // console.log(propName, headerWithText.textContent)
+    expect(headerWithText).toBeTruthy();
+  });
 });
+
 
 Then('I should see rows displaying my data', async () => {
   // First find the table with the correct label

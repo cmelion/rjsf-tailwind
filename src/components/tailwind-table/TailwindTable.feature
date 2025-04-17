@@ -1,4 +1,4 @@
-@storybook-running
+@storybook-running @component
 Feature: Tailwind Table Component
   As a user
   I want to view and manipulate tabular data

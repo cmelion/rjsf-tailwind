@@ -1,0 +1,7 @@
+{
+  "name": "custom-vitest-cucumber",
+  "version": "1.0.0",
+  "bin": {
+    "cucumber-js": "../node_modules/vitest/vitest.mjs"
+  }
+}

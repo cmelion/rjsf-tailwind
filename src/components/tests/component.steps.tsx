@@ -1,16 +1,20 @@
-/// <reference types="vitest" />
 // src/components/tests/component.steps.ts
 import { Given, When, Then } from 'quickpickle';
 import { render, screen, within } from '@testing-library/react';
 import { composeStories } from '@storybook/react';
 import { expect } from 'vitest';
 import * as TailwindTableStories from '../tailwind-table/TailwindTable.stories';
+import { AriaRole } from '@tests/utils/types';
+
 
 // Create type for world object
 type TestWorld = {
   storyName: string;
   component: any;
   schema?: any;
+  formData?: any;
+  tableName?: string;
+  tableRole?: AriaRole;
 };
 
 // Compose the stories for direct testing
@@ -27,7 +31,7 @@ Given('I have some initial data records', async (world: TestWorld) => {
 });
 
 // Action steps
-When('I view the table', async (world: TestWorld) => {
+When('I view the {string} {string}', async (world: TestWorld, tableName: string, tableRole: AriaRole) => {
   // Get the appropriate story component based on the storyName
   const Story = stories[world.storyName as keyof typeof stories];
 
@@ -35,12 +39,17 @@ When('I view the table', async (world: TestWorld) => {
     throw new Error(`Story "${world.storyName}" not found in TailwindTable stories`);
   }
 
-  // Store the schema from the story in the world object
+  // Store both schema and formData from the story in the world object
   world.schema = Story.args.schema;
+  world.formData = Story.args.formData;
 
   // Render the component inside a test-friendly environment
   const { container } = render(<Story />);
   world.component = { container };
+
+  // Store the table name and role for later steps
+  world.tableName = tableName;
+  world.tableRole = tableRole;
 });
 
 
@@ -70,22 +79,83 @@ Then('I should see column headers based on the schema properties', async (world:
   });
 });
 
+Then('I should see rows displaying my data', async (world: TestWorld) => {
+  // Get the expected data from the world object
+  const expectedData = world.formData;
+  // Get the schema which contains type information
+  const schema = world.schema || {};
 
+  if (!expectedData || !Array.isArray(expectedData)) {
+    throw new Error('No form data available in the world object or data is not an array');
+  }
 
-Then('I should see rows displaying my data', async () => {
-  // First find the table with the correct label
-  const table = screen.getByRole('grid', { name: 'Data records table' });
+  // Find the table by its specific role and name that were stored in the previous step
+  const table = screen.getByRole(world.tableRole || 'grid', { name: world.tableName });
 
-  // Get all rows in the table
-  const allRows = within(table).getAllByRole('row', {});
+  // Get all rows
+  const rows = within(table).getAllByRole('row', {});
 
-  // The first row is likely the header row, so we'll skip it to get data rows
-  const dataRows = allRows.filter(row => {
-    // A data row shouldn't contain columnheader elements
-    return within(row).queryAllByRole('columnheader', {}).length === 0;
+  // Skip the header row
+  const dataRows = rows.slice(1);
+
+  // Get header cells to map column indexes to property names
+  const headerRow = rows[0];
+  const headerCells = within(headerRow).getAllByRole('columnheader', {});
+  const columnMap = new Map();
+
+  // Build mapping between column titles and indexes
+  headerCells.forEach((cell, index) => {
+    columnMap.set(cell.textContent?.trim(), index);
   });
 
-  expect(dataRows.length).toBeGreaterThan(0);
+  // Verify we have the right number of data rows
+  expect(dataRows.length).toEqual(expectedData.length);
+
+  // For each row of expected data, verify the content
+  expectedData.forEach((expectedRowData, rowIndex) => {
+    const row = dataRows[rowIndex];
+    const cells = within(row).getAllByRole('cell', {});
+
+    // For each property in the expected data
+    Object.entries(expectedRowData).forEach(([key, value]) => {
+      // Skip complex objects
+      if (typeof value === 'object' && value !== null) return;
+
+      // Get property type from schema
+      const propSchema = schema.properties?.[key];
+      const isBoolean = propSchema?.type === 'boolean';
+      const columnTitle = propSchema?.title || key;
+
+      // Find the column index for this property
+      const columnIndex = columnMap.get(columnTitle);
+
+      if (columnIndex !== undefined && columnIndex < cells.length) {
+        const cell = cells[columnIndex];
+
+        // Handle boolean values differently
+        if (isBoolean) {
+          if (value === true) {
+            // Check for checkmark (either as an SVG icon or Unicode character)
+            const hasCheckmark = !!cell.querySelector('svg.check-icon, svg[data-testid="check-icon"]') ||
+              cell.textContent?.includes('✓');
+            expect(hasCheckmark).toBeTruthy();
+          } else {
+            // Check for X mark (either as an SVG icon or Unicode character)
+            const hasXmark = !!cell.querySelector('svg.x-icon, svg[data-testid="x-icon"]') ||
+              cell.textContent?.includes('✗') ||
+              cell.textContent?.includes('X');
+            expect(hasXmark).toBeTruthy();
+          }
+          return;
+        }
+
+        // For non-boolean values, check the text content
+        const valueStr = String(value);
+        const cellText = cell.textContent || '';
+        expect(cellText).toContain(valueStr);
+      }
+    });
+  });
 });
 
 Then('each row should have action buttons', async () => {

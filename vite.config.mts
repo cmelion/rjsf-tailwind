@@ -11,11 +11,6 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  test: {
-    // Add reporters to the base test configuration
-    reporters: ['default', 'html'],
-    outputFile: './vite-report/index.html',
-  },
   // Add this line for GitHub Pages (use your repo name)
   base: '/rjsf-tailwind/',
 })

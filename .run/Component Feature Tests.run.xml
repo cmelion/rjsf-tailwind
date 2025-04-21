@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Component Feature Tests" type="JavaScriptTestRunnerVitest">
-    <config value="$PROJECT_DIR$/vitest.config.ts" />
+    <config value="$PROJECT_DIR$/vitest.config.mts" />
     <node-interpreter value="$USER_HOME$/.nvm/versions/node/v18.18.2/bin/node" />
     <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
     <working-dir value="$PROJECT_DIR$" />

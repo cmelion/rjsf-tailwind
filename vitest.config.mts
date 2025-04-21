@@ -8,7 +8,7 @@
 // To work around this, we can create a dedicated configuration
 // file that exports only the configuration we want to debug
 
-import workspace from './vitest.workspace';
+import workspace from './vitest.workspace.mjs';
 
 // Pick the "components" configuration from the workspace array.
 // TypeScript is complaining because it doesn't know the exact type of workspace items

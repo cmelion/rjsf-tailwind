@@ -4,8 +4,9 @@ import { defineBddConfig /*, cucumberReporter */} from 'playwright-bdd';
 
 const testDir = defineBddConfig({
   features: 'src/**/*.feature',
-  steps: 'tests/step-definitions/**/*.steps.js', // Change to .js
+  steps: 'tests/step-definitions/**/*.steps.ts',
   outputDir: 'tests/bdd-generated',
+  tags: '@storybook-running'  // Only run scenarios with @storybook-running tag
 });
 
 export default defineConfig({

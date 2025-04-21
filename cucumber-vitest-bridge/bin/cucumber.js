@@ -68,7 +68,7 @@ const command = [
   `--inspect=${debugPort}`, // Use a random debug port
   vitestScript,
   'run',
-  '--config', path.resolve(process.cwd(), 'vitest.config.ts'),
+  '--config', path.resolve(process.cwd(), 'vitest.config.mts'),
   '--project', 'components',
   '--poolOptions.threads.maxThreads=1',
   '--poolOptions.threads.minThreads=1',

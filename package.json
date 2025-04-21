@@ -2,7 +2,6 @@
   "name": "shadcn-vite-template",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -14,9 +13,10 @@
     "test:bdd": "npx bddgen && npx playwright test",
     "test:bdd:generate": "npx bddgen",
     "test:bdd:run": "npx playwright test",
-    "test:bdd:ui": "npx bddgen && concurrently \"yarn test:bdd:watch\" \"npx playwright test --ui\"",
-    "test:bdd:watch": "chokidar \"**/*.steps.js\" \"**/*.feature\" -c \"yarn test:bdd:generate\"",
-    "test:components": "vitest run --project components",
+    "test:bdd:ui": "npx playwright test --ui",
+    "test:bdd:debug": "npx playwright test --debug",
+    "test:bdd:watch": "chokidar \"**/*.steps.ts\" \"**/*.feature\" -c \"yarn test:bdd:generate\"",
+    "test:components": "vitest run --project components -t @component",
     "test:components:scenario": "vitest run --project components --testNamePattern"
   },
   "dependencies": {
@@ -66,6 +66,7 @@
     "aria-query": "^5.3.2",
     "autoprefixer": "^10.4.16",
     "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.1.2",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react-hooks": "^4.6.0",

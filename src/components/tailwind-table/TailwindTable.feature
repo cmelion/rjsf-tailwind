@@ -9,7 +9,7 @@ Feature: Tailwind Table Component
     And I have some initial data records
 
   Scenario: Viewing table data
-    When I view the table
+    When I view the "Data records table" "grid"
     Then I should see column headers based on the schema properties
     And I should see rows displaying my data
     And each row should have action buttons

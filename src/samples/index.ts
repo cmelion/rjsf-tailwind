@@ -41,7 +41,7 @@ export const samples: SamplesCollection = Object.freeze({
   Arrays: arrays,
   Numbers: numbers,
   Widgets: widgets,
-  Ordering: ordering,
+  'Ordering with Grid Layout': ordering,
   References: references,
   Custom: custom,
   Errors: errors,

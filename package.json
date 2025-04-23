@@ -15,9 +15,9 @@
     "test:bdd:run": "npx playwright test",
     "test:bdd:ui": "npx playwright test --ui",
     "test:bdd:debug": "npx playwright test --debug",
-    "test:bdd:watch": "chokidar \"**/*.steps.ts\" \"**/*.feature\" -c \"yarn test:bdd:generate\"",
-    "test:components": "vitest run --project components -t @component",
-    "test:components:scenario": "vitest run --project components --testNamePattern"
+    "test:bdd:watch": "chokidar \"src/**/*.steps.ts\" \"src/**/*.feature\" -c \"yarn test:bdd:generate\"",
+    "test:bdd:components": "vitest run --project components -t @component",
+    "test:bdd:components:scenario": "vitest run --project components --testNamePattern"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.0.6",

@@ -25,7 +25,7 @@ export default defineWorkspace([
       environment: 'jsdom',
       globals: true,
       include: ['./src/components/**/*.feature'],
-      setupFiles: ['./src/components/tests/component.steps'],
+      setupFiles: ['src/components/tests/index.ts'],
     },
   },
 ]);

@@ -47,9 +47,24 @@ jobs:
       - name: Copy coverage reports to dist
         run: |
           mkdir -p dist/coverage
-          cp -r coverage/vitest dist/coverage/vitest
-          cp -r playwright-report dist/coverage/playwright
-          cp -r coverage/merged-html dist/coverage/merged
+          
+          if [ -d "coverage/vitest" ]; then
+            cp -r coverage/vitest dist/coverage/vitest
+          else
+            echo "Warning: coverage/vitest directory not found"
+          fi
+          
+          if [ -d "playwright-report" ]; then
+            cp -r playwright-report dist/coverage/playwright
+          else
+            echo "Warning: playwright-report directory not found"
+          fi
+          
+          if [ -d "coverage/merged-html" ]; then
+            cp -r coverage/merged-html dist/coverage/merged
+          else
+            echo "Warning: coverage/merged-html directory not found"
+          fi
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4

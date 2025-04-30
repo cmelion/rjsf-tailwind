@@ -259,7 +259,6 @@ function Home() {
                     {viewMode === "form" ? (
                       <TailwindForm
                         noHtml5Validate
-                        role="form"
                         schema={schema}
                         uiSchema={uiSchema}
                         formData={formData}

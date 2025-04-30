@@ -120,6 +120,7 @@ export default function TailwindTable({
               onClick={() => toggleRowExpanded(row.id)}
               className="p-1 text-primary hover:text-primary/80"
               title={expandedRows[row.id] ? "Collapse row" : "Expand row"}
+              aria-label={expandedRows[row.id] ? "Collapse row" : "Expand row"}
             >
               {expandedRows[row.id] ? <FiChevronUp /> : <FiChevronDown />}
             </button>
@@ -127,6 +128,7 @@ export default function TailwindTable({
               onClick={() => handleDeleteRow(row.index)}
               className="p-1 text-destructive hover:text-destructive/80"
               title="Delete row"
+              aria-label="Delete row"
             >
               <FiTrash2 />
             </button>

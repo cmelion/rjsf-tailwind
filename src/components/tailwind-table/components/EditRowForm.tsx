@@ -39,7 +39,7 @@ export function EditRowForm({
   return (
     <div
       className="rounded border border-border bg-card p-4"
-      role="region"
+      role="form"
       aria-label="Edit record form"
     >
       <h3 id={titleId} className="mb-2 text-lg font-medium">Edit Record</h3>

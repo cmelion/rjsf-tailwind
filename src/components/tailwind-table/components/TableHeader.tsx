@@ -33,11 +33,12 @@ export function TableHeader({
         </button>
         <div className="relative">
           <button
-            onClick={toggleColumnSelector}
-            className="default-button"
-            aria-expanded={isColumnSelectorOpen}
             aria-controls={columnMenuId}
+            aria-expanded={isColumnSelectorOpen}
             aria-haspopup="true"
+            aria-label={isColumnSelectorOpen ? 'Hide column selector' : 'Show column selector'}
+            className="default-button"
+            onClick={toggleColumnSelector}
           >
             Columns{" "}
             {isColumnSelectorOpen ? (

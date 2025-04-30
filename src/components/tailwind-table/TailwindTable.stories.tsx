@@ -118,7 +118,7 @@ export const Default: Story = {
     schema: userSchema,
     uiSchema: userUiSchema,
     formData: sampleUsers,
-    onChange: (data) => console.log('Data changed:', data),
+    onChange: (_data) => console.log('Data changed:' /*, data */),
   },
 };
 

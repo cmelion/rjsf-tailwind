@@ -13,7 +13,7 @@
  * 3. Fix debugging issues by dynamically allocating debug ports
  *
  * This file uses CommonJS module format and needs to be excluded from standard linting rules
- * as it must be compatible with WebStorm's direct execution of cucumber.js.
+ * as it must be compatible with WebStorm's direct execution of cucumber.cjs.
  */
 
 

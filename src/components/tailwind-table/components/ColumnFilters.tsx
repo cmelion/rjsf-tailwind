@@ -19,13 +19,14 @@ export function ColumnFilters({
   const regionId = useId();
 
   return (
-    <div className="border-b">
+    <div className="border-b" aria-label="Column Filters">
       <button
-        onClick={toggleFilters}
-        className="flex w-full items-center justify-between bg-muted px-4 py-2 text-left text-sm font-medium"
-        aria-expanded={isFiltersOpen}
         aria-controls={regionId}
+        aria-expanded={isFiltersOpen}
+        aria-label={isFiltersOpen ? 'Collapse column filters' : 'Expand column filters'}
+        className="flex w-full items-center justify-between bg-muted px-4 py-2 text-left text-sm font-medium"
         id={headerId}
+        onClick={toggleFilters}
       >
         <span>Column Filters</span>
         {isFiltersOpen ? <FiChevronUp aria-hidden="true" /> : <FiChevronDown aria-hidden="true" />}
@@ -62,6 +63,7 @@ export function ColumnFilters({
                       onChange={(e) => column.setFilterValue(e.target.value)}
                       className="w-full rounded-md border bg-background px-3 py-1 text-sm text-foreground placeholder:text-muted-foreground"
                       aria-labelledby={labelId}
+                      role="textbox"
                     />
                   </div>
                 )

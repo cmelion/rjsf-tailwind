@@ -32,8 +32,21 @@ jobs:
       - name: Build App
         run: yarn build
 
+      - name: Run tests with coverage
+        run: yarn test:coverage
+
+      - name: Merge coverage reports
+        run: yarn merge-coverage
+
       - name: Build Storybook
         run: yarn build-storybook -o dist/storybook
+
+      - name: Copy coverage reports to dist
+        run: |
+          mkdir -p dist/coverage
+          cp -r coverage/vitest dist/coverage/vitest
+          cp -r playwright-report dist/coverage/playwright
+          cp -r coverage/merged-html dist/coverage/merged
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
@@ -46,8 +59,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           artifact_name: github-pages
           token: ${{ secrets.GITHUB_TOKEN }}

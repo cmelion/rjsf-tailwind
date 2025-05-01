@@ -36,10 +36,7 @@ jobs:
         run: yarn build
 
       - name: Run tests with coverage
-        run: yarn test:coverage
-
-      - name: Merge coverage reports
-        run: yarn merge-coverage
+        run: yarn test:components:coverage
 
       - name: Build Storybook
         run: yarn build-storybook -o dist/storybook
@@ -47,23 +44,11 @@ jobs:
       - name: Copy coverage reports to dist
         run: |
           mkdir -p dist/coverage
-          
-          if [ -d "coverage/vitest" ]; then
-            cp -r coverage/vitest dist/coverage/vitest
+
+          if [ -d "coverage" ]; then
+            cp -r coverage dist/coverage
           else
-            echo "Warning: coverage/vitest directory not found"
-          fi
-          
-          if [ -d "playwright-report" ]; then
-            cp -r playwright-report dist/coverage/playwright
-          else
-            echo "Warning: playwright-report directory not found"
-          fi
-          
-          if [ -d "coverage/merged-html" ]; then
-            cp -r coverage/merged-html dist/coverage/merged
-          else
-            echo "Warning: coverage/merged-html directory not found"
+            echo "Warning: coverage directory not found"
           fi
 
       - name: Setup GitHub Pages

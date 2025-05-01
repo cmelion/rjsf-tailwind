@@ -3,28 +3,31 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "tsc && vite build",
-    "build-storybook": "storybook build",
+    "// Development & Build": "",
     "dev": "vite",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "merge-coverage": "mkdir -p coverage/tmp && npx nyc merge coverage/tmp .nyc_output/out.json && npx nyc report --reporter=html --report-dir=coverage/merged-html",
-    "postinstall": "node remove-vitest-chai-file.cjs && node generate-parameter-types.cjs",
-    "prestorybook:bg": "npx wait-on -t 5000 tcp:6006 && echo 'Storybook already running' || echo 'Starting Storybook...'",
+    "build": "tsc && vite build",
     "preview": "vite preview",
-    "start-storybook-and-test": "start-server-and-test 'yarn storybook:cov' 'http-get://localhost:6006/iframe.html?id=components-tailwindtable--default' 'npx playwright test --reporter=html'",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "postinstall": "node remove-vitest-chai-file.cjs && node generate-parameter-types.cjs",
+
+    "// Storybook": "",
     "storybook": "storybook dev -p 6006",
-    "storybook:bg": "wait-on -l tcp:6006 && echo 'Storybook is ready' || yarn storybook --ci --quiet --no-open",
-    "storybook:cov": "storybook dev -p 6006 --ci --quiet --no-open",
-    "test:bdd": "npx bddgen && concurrently --kill-others --success first \"yarn storybook:bg\" \"yarn test:bdd:run\"",
-    "test:bdd:components": "vitest run --project components -t @component",
-    "test:bdd:components:scenario": "vitest run --project components --testNamePattern",
-    "test:bdd:coverage": "npx bddgen && yarn start-storybook-and-test",
+    "storybook:ci": "storybook dev -p 6006 --ci --quiet --no-open",
+    "build-storybook": "storybook build",
+
+    "// BDD Tests (Playwright)": "",
+    "test:bdd": "npx bddgen && npx playwright test",
     "test:bdd:generate": "npx bddgen",
     "test:bdd:run": "npx playwright test",
+    "test:bdd:ci": "yarn test:bdd:generate && start-server-and-test storybook:ci http://localhost:6006 test:bdd:run",
     "test:bdd:ui": "npx playwright test --ui",
+    "test:bdd:debug": "npx playwright test --debug",
     "test:bdd:watch": "chokidar \"src/**/*.steps.ts\" \"src/**/*.feature\" -c \"yarn test:bdd:generate\"",
+
+    "// Component Tests (Vitest)": "",
+    "test:components": "vitest run --project components -t @component",
     "test:components:coverage": "vitest run --project components --coverage",
-    "test:coverage": "yarn test:bdd:coverage && yarn test:components:coverage"
+    "test:components:scenario": "vitest run --project components --testNamePattern"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -67,8 +70,8 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
-    "@vitest/browser": "^3.1.1",
-    "@vitest/coverage-v8": "^3.1.1",
+    "@vitest/browser": "3.1.1",
+    "@vitest/coverage-v8": "3.1.1",
     "@vitest/ui": "3.1.1",
     "aria-query": "^5.3.2",
     "autoprefixer": "^10.4.16",
@@ -90,13 +93,11 @@
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "quickpickle": "^1.6.2",
-    "start-server-and-test": "^2.0.11",
     "storybook": "^8.6.12",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
     "vite": "^6.2.5",
-    "vitest": "^3.1.1",
-    "wait-on": "^8.0.3"
+    "vitest": "^3.1.1"
   },
   "msw": {
     "workerDirectory": [

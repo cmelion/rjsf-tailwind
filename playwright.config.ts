@@ -22,25 +22,12 @@ export default defineConfig({
   },
   reporter: [
     ['list', { printSteps: true }],
-    ['html', { outputFolder: 'playwright-report' }],
-    ['json', { outputFile: 'playwright-report/test-results.json' }]
+    ['html', {outputFile: 'playwright-report/report.html'}]
   ],
   projects: [
     {
       name: 'chromium',
-      use: {
-        browserName: 'chromium',
-        // Enable JS coverage collection
-        contextOptions: {
-          viewport: { width: 1280, height: 720 }
-        }
-      },
+      use: { browserName: 'chromium' },
     }
   ],
-  webServer: {
-    command: 'yarn storybook:cov',
-    url: 'http://localhost:6006/iframe.html?id=components-tailwindtable--default',
-    reuseExistingServer: true,
-    timeout: 60000
-  }
 });

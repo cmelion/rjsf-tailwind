@@ -38,18 +38,15 @@ jobs:
       - name: Run tests with coverage
         run: yarn test:components:coverage
 
-      - name: Build Storybook
-        run: yarn build-storybook -o dist/storybook
-
       - name: Copy coverage reports to dist
         run: |
           mkdir -p dist/coverage
+          cp -R coverage/* dist/coverage/
+          file_count=$(find dist/coverage -type f | wc -l)
+          echo "Copied $file_count coverage report files to dist/coverage/"       
 
-          if [ -d "coverage" ]; then
-            cp -r coverage dist/coverage
-          else
-            echo "Warning: coverage directory not found"
-          fi
+      - name: Build Storybook
+        run: yarn build-storybook -o dist/storybook
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4

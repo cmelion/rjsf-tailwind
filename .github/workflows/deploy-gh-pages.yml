@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Install Playwright Browsers
-        run: yarn playwright install chromium
-
       - name: Build App
         run: yarn build
 
@@ -41,9 +38,9 @@ jobs:
       - name: Copy coverage reports to dist
         run: |
           mkdir -p dist/coverage
-          cp -R coverage/* dist/coverage/
+          cp -R coverage/components/. dist/coverage/
           file_count=$(find dist/coverage -type f | wc -l)
-          echo "Copied $file_count coverage report files to dist/coverage/"       
+          echo "Copied $file_count component coverage report files to dist/coverage/"   
 
       - name: Build Storybook
         run: yarn build-storybook -o dist/storybook

@@ -46,7 +46,7 @@ jobs:
           echo "Copied $file_count component coverage report files to dist/coverage/"   
 
       - name: Run BDD tests
-        run: yarn test:bdd:generate && yarn test:bdd:run
+        run: yarn test:bdd:ci
 
       - name: Copy BDD test reports to dist
         run: |

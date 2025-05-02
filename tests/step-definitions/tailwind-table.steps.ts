@@ -16,9 +16,11 @@ import {
   executeTableClick,
   openColumnSelectorMenu,
   toggleColumnVisibility,
-  verifyColumnIsHidden,
+  confirmColumnIsHidden,
 } from "@tests/utils/table-testing/table-operations"
 import { createBdd } from "playwright-bdd"
+
+import testData from "@/samples/testData"
 
 // Create the BDD object
 const { Given, When, Then } = createBdd()
@@ -39,8 +41,8 @@ type TableContext = {
 }
 
 // Helper functions
-const navigateToStory = async (page: Page, storyId = "default") => {
-  const storyPath = `/iframe.html?args=&id=components-tailwindtable--${storyId.toLowerCase()}&viewMode=story`
+const navigateToStory = async (page: Page, componentPath = 'components-tailwindtable', storyId = "default") => {
+  const storyPath = `/iframe.html?args=&id=${componentPath.toLowerCase()}--${storyId.toLowerCase()}&viewMode=story`
   await page.goto(storyPath)
 }
 
@@ -84,23 +86,59 @@ const getTableContext = async (page: Page): Promise<TableContext> => {
 }
 
 // Background steps
+const storyId = "Default" // Default story, can be parameterized if needed
 Given("I have a table with schema defining several properties", async () => {
   // This is set up in the Storybook stories already
 })
 
-Given("I have some initial data records", async () => {
-  // This is set up in the Storybook stories already
+Given("I have some initial data records", async ({ page }: World) => {
+  // Navigate to the story
+  await navigateToStory(page, "components-tailwindtable", storyId)
 })
+
+// App context steps
+Given("I am viewing the application", async ({ page }: World) => {
+  // Navigate to the App story
+  await navigateToStory(page, 'pages-app', "Default")
+
+  // Wait for the application to fully load
+  await page.waitForSelector('.container', { state: 'visible' })
+
+  // Wait for a key UI element that indicates the app is interactive
+  await page.waitForSelector('h3:has-text("Tailwind Form")', { state: 'visible', timeout: 5000 })
+})
+
+Given("I have Switched to Table View", async ({ page }: World) => {
+  // Try to find the Table View button first
+  const tableViewButton = await page.getByRole('button', { name: 'Switch to Table View' });
+  const tableButtonExists = await tableViewButton.isVisible().catch(() => false);
+
+  if (tableButtonExists) {
+    // Found the button we want to click, so click it
+    await tableViewButton.click();
+  } else {
+    // Check if we're already in Table View by looking for the Form View button
+    const formViewButton = page.getByRole('button', { name: 'Switch to Form View' });
+    const formButtonExists = await formViewButton.isVisible().catch(() => false);
+
+    if (!formButtonExists) {
+      // Neither button found - we're in an unexpected state
+      throw new Error('Could not find either "Switch to Table View" or "Switch to Form View" buttons');
+    }
+    // If formButtonExists is true, we're already in Table View - continue
+  }
+
+  // Initialize test data in the page - simulating store state for Playwright
+  await page.evaluate((data) => {
+    // @ts-expect-error Adding test data to window
+    window.__APP_STATE = data;
+  }, testData);
+});
 
 // Viewing table data
 When(
   "I view the {tableName} as a {tableRole}",
   async ({ page }: World, tableName: string, tableRole: "grid" | "table") => {
-    const storyId = "Default" // Default story, can be parameterized if needed
-
-    // Navigate to the story
-    await navigateToStory(page, storyId)
-
     // Make sure the table is visible
     await page
       .getByRole(tableRole, { name: tableName })
@@ -123,6 +161,7 @@ When(
         storyId,
       },
     )
+
   },
 )
 
@@ -352,6 +391,150 @@ Then("that column should be hidden from view", async ({ page }) => {
     tableName,
   )
 
-  const isHidden = await verifyColumnIsHidden({ tableTester, table })
+  const isHidden = await confirmColumnIsHidden({ tableTester, table })
   expect(isHidden).toBeTruthy()
+})
+
+When("I update {string} in the edit form", async ({ page }: World, fieldName: string) => {
+  const { tableTester } = await getTableContext(page)
+
+  if (!tableTester) {
+    throw new Error("Required test context not initialized")
+  }
+
+  // Find the field by label using the tableTester abstraction
+  const input = await tableTester.findElementByRole('textbox', {
+    name: new RegExp(`.*${fieldName}.*`, 'i')
+  })
+
+  if (!input) {
+    throw new Error(`Form field "${fieldName}" not found`)
+  }
+
+  // Use the tableTester methods for consistent interaction patterns
+  await tableTester.click(input)
+  await tableTester.clear(input)
+  await tableTester.type(input, `Updated ${fieldName}`)
+})
+
+Then("the row data should be updated with my changes", async ({ page }: World) => {
+  const { tableTester, tableName, tableRole } = await getTableContext(page)
+
+  const table = await tableTester.getTableByRole(
+    tableRole as AriaRole,
+    tableName,
+  )
+
+  // Get the updated row (row 2 from the scenario)
+  const rowIndex = 2
+  const row = await tableTester.getRowByIndex(table, rowIndex)
+
+  // Get all cells in the row
+  const cells = await tableTester.getCellsInRow(row)
+
+  // Get the text content of the first cell (assuming Name is the first column)
+  const nameCell = cells[0]
+  const cellContent = await tableTester.getCellContent(nameCell)
+
+  // Verify the cell contains the updated value
+  expect(cellContent.includes("Updated Name")).toBeTruthy()
+})
+
+Then("I should see a form for creating a new record", async ({ page }: World) => {
+  // Find the dialog for creating a new record
+  const formDialog = page.getByRole("dialog", { name: /create new record/i })
+
+  // Verify it's visible
+  await expect(formDialog).toBeVisible()
+
+  // Verify essential form fields exist
+  const nameField = page.getByRole("textbox", { name: /name/i })
+  await expect(nameField).toBeVisible()
+})
+
+const newTester = {
+  name: "New Test Record Name",
+  age: "33",
+  email: "new@tester.com"
+};
+
+When("I fill out the form and submit", async ({ page }: World) => {
+  // Find and fill the name field
+  const nameField = page.getByRole("textbox", { name: /name/i })
+  await nameField.fill(newTester.name)
+
+  // Find and fill the age field
+  const ageField = page.getByRole("spinbutton", { name: /age/i })
+  await ageField.fill(newTester.age)
+
+  // Find and fill the role field
+  const emailField = page.getByRole("textbox", { name: /email/i })
+  await emailField.fill(newTester.email)
+
+  // Find and click the submit button
+  const submitButton = page.getByRole("button", { name: /submit|save|create/i })
+  await submitButton.click()
+})
+
+Then("a new row should be added to the table", async ({ page }: World) => {
+  const { tableTester, tableName, tableRole } = await getTableContext(page)
+
+  const table = await tableTester.getTableByRole(
+    tableRole as AriaRole,
+    tableName,
+  )
+
+  // Get all rows in the table
+  const rows = await tableTester.getAllRows(table)
+
+  // Skip header row
+  const dataRows = rows.slice(1)
+
+  // Look for our newly added row
+  let foundNewRow = false
+  for (const row of dataRows) {
+    const cells = await tableTester.getCellsInRow(row)
+    const cellContents = await Promise.all(
+      cells.map(cell => tableTester.getCellContent(cell))
+    )
+
+    const rowText = cellContents.join(' ')
+    if (rowText.includes(newTester.name) && rowText.includes(newTester.age) && rowText.includes(newTester.email)) {
+      foundNewRow = true
+      break
+    }
+  }
+
+  expect(foundNewRow).toBeTruthy()
+})
+
+Then("that row should be removed from the table", async ({ page }: World) => {
+  const { tableTester, tableName, tableRole } = await getTableContext(page)
+
+  const table = await tableTester.getTableByRole(
+    tableRole as AriaRole,
+    tableName,
+  )
+
+  // The row index we're checking for deletion
+  const deletedRowIndex = 2
+
+  // Get all rows in the table
+  const rows = await tableTester.getAllRows(table)
+
+  // Skip header row
+  const dataRows = rows.slice(1)
+
+  // Check if the deleted row still exists
+  let rowFound = false
+  for (const row of dataRows) {
+    const rowIndexAttr = await tableTester.getAttribute(row, 'data-row-index')
+    if (rowIndexAttr === String(deletedRowIndex)) {
+      rowFound = true
+      break
+    }
+  }
+
+  // Verify the row was removed
+  expect(rowFound).toBeFalsy()
 })

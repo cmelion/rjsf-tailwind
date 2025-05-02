@@ -31,10 +31,13 @@ import defaults from './defaults';
 import options from './options';
 import ifThenElse from './ifThenElse';
 import customField from './customField';
+import testData from './testData';
 import { SamplesCollection } from '@/types/samples';
 
 export const samples: SamplesCollection = Object.freeze({
   Blank: { schema: {}, uiSchema: {}, formData: {} },
+  /* Warning Playwright tests are relying on testData being in this position */
+  'Test Data': testData,
   Simple: simple,
   'UI Options': options,
   Nested: nested,

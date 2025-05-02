@@ -117,4 +117,42 @@
         box-shadow: 0 0 0 3px rgb(var(--ir-primary) / var(--ir-focus-ring-opacity));
     }
 
+    /* Add to src/styles/_indigo-rounded.css */
+    .indigo-rounded table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+    .indigo-rounded table th,
+    .indigo-rounded table td {
+        border-color: rgb(var(--ir-border));
+    }
+
+    .indigo-rounded .overflow-x-auto {
+        border-radius: var(--ir-radius);
+        border-color: rgb(var(--ir-border));
+    }
+
+    .indigo-rounded thead th:first-child {
+        border-top-left-radius: var(--ir-radius);
+    }
+
+    .indigo-rounded thead th:last-child {
+        border-top-right-radius: var(--ir-radius);
+    }
+
+    .indigo-rounded tbody tr:last-child td:first-child {
+        border-bottom-left-radius: var(--ir-radius);
+    }
+
+    .indigo-rounded tbody tr:last-child td:last-child {
+        border-bottom-right-radius: var(--ir-radius);
+    }
+
+    .indigo-rounded table th {
+        background-color: rgba(var(--ir-primary), 0.1);
+        color: rgb(var(--ir-primary));
+        font-weight: 600;
+    }
 }

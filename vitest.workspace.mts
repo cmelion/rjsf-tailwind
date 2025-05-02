@@ -11,35 +11,40 @@ const baseConfig = {
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@tests": path.resolve(__dirname, "./tests"),
+      // Monaco editor mocks
+      "monaco-editor": path.resolve(__dirname, "./src/components/tests/mocks/monaco-editor.mock.ts"),
+      "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "./src/components/tests/mocks/monaco-editor.mock.ts"),
+      // Worker mocks
+      "monaco-editor/esm/vs/editor/editor.worker?worker": path.resolve(__dirname, "./src/components/tests/mocks/monaco-workers.mock.ts"),
+      "monaco-editor/esm/vs/language/json/json.worker?worker": path.resolve(__dirname, "./src/components/tests/mocks/monaco-workers.mock.ts"),
+      // Important: Mock the userWorker.ts file directly
+      "src/userWorker.ts": path.resolve(__dirname, "./src/components/tests/mocks/userWorker.mock.ts"),
+      // Also add the relative path version that might be used in imports
+      "../../userWorker.ts": path.resolve(__dirname, "./src/components/tests/mocks/userWorker.mock.ts")
     },
   },
 };
 
 // Define the test configuration for the 'components' project
-// Remove the explicit : ProjectConfig type assertion
 const componentsTestConfig = {
   name: 'components',
   environment: 'jsdom',
   globals: true,
   include: ['./src/components/**/*.feature'],
   setupFiles: ['src/components/tests/index.ts'],
-  // Place coverage configuration here
   coverage: {
-    provider: 'v8', // or 'istanbul'
-    // Ensure 'html' is listed
+    provider: 'v8',
     reporter: ['text', 'json', 'html'],
-    // Explicitly set the output directory for this project's coverage
     reportsDirectory: './coverage/components',
+    // Only include src files in coverage reports
+    include: ['src/**'],
   },
 };
 
 export default defineWorkspace([
   {
-    // Extend the base config and add component-specific plugins
     ...baseConfig,
     plugins: [...(baseConfig.plugins || []), quickpickle()],
-    // Assign the test configuration
     test: componentsTestConfig,
   },
-  // Add other projects here if needed
 ]);

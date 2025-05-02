@@ -5,6 +5,7 @@ import { create } from "zustand";
 import { AppState } from "./types/store";
 import { getSamplesList, getSampleByName } from "./api";
 import { templateComponents } from "@/templates";
+import testData from './samples/testData'
 
 // List of UI keys that should be mapped to template components
 const templateKeys = ["ui:ObjectFieldTemplate", "ui:field", "ui:ArrayFieldTemplate", "ui:widget"];
@@ -64,10 +65,10 @@ function processUiSchema(obj: any): any {
 }
 
 export const useStore = create<AppState>((set, get) => ({
-  schema: {} as JSONSchema7 | RJSFSchema,
-  uiSchema: {},
-  formData: {},
-  label: "",
+  schema: testData.schema as JSONSchema7 | RJSFSchema,
+  uiSchema: testData.uiSchema,
+  formData: testData.formData,
+  label: "testData",
   loading: false,
   error: null,
   availableSamples: [],

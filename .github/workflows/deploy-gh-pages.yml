@@ -42,6 +42,16 @@ jobs:
           file_count=$(find dist/coverage -type f | wc -l)
           echo "Copied $file_count component coverage report files to dist/coverage/"   
 
+      - name: Run BDD tests
+        run: yarn test:bdd:generate && yarn test:bdd:run
+
+      - name: Copy BDD test reports to dist
+        run: |
+          mkdir -p dist/bdd-reports
+          cp -R playwright-report/. dist/bdd-reports/
+          file_count=$(find dist/bdd-reports -type f | wc -l)
+          echo "Copied $file_count BDD test report files to dist/bdd-reports/"
+
       - name: Build Storybook
         run: yarn build-storybook -o dist/storybook
 

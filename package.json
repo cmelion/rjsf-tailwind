@@ -9,12 +9,10 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "postinstall": "node remove-vitest-chai-file.cjs && node generate-parameter-types.cjs",
-
     "// Storybook": "",
     "storybook": "storybook dev -p 6006",
     "storybook:ci": "storybook dev -p 6006 --ci --quiet --no-open",
     "build-storybook": "storybook build",
-
     "// BDD Tests (Playwright)": "",
     "test:bdd": "npx bddgen && npx playwright test",
     "test:bdd:generate": "npx bddgen",
@@ -23,7 +21,6 @@
     "test:bdd:ui": "npx playwright test --ui",
     "test:bdd:debug": "npx playwright test --debug",
     "test:bdd:watch": "chokidar \"src/**/*.steps.ts\" \"src/**/*.feature\" -c \"yarn test:bdd:generate\"",
-
     "// Component Tests (Vitest)": "",
     "test:components": "vitest run --project components -t @component",
     "test:components:coverage": "vitest run --project components --coverage",
@@ -93,6 +90,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "quickpickle": "^1.6.2",
+    "start-server-and-test": "^2.0.11",
     "storybook": "^8.6.12",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",

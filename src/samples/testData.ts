@@ -14,7 +14,7 @@ export default {
         format: 'email',
       },
       age: {
-        type: 'integer',
+        type: 'number',
         title: 'Age',
         minimum: 0,
       },

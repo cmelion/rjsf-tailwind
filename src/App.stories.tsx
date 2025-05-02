@@ -8,7 +8,7 @@ import testData from './samples/testData';
 
 // --- Define or import your initial data to support test environments ---
 // Using the data from TailwindTable.stories.tsx as an example
-const initialSchema: JSONSchema7 = testData.schema;
+const initialSchema = testData.schema as unknown as JSONSchema7;
 
 const initialUiSchema = testData.uiSchema;
 

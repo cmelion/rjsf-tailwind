@@ -7,9 +7,12 @@ import {
   verifyColumnHeaders,
   verifyColumnValues,
   verifyEditForm,
+  verifyNewRowAdded,
+  verifyRowIsRemoved,
   verifyTableData,
 } from "../utils/table-testing/verifiers"
 import { AriaRole } from "../utils/types"
+import { newRecordData } from "../fixtures/form-data"
 import { expect, Page } from "@playwright/test"
 import {
   executeDataTableInput,
@@ -17,7 +20,7 @@ import {
   openColumnSelectorMenu,
   toggleColumnVisibility,
   confirmColumnIsHidden,
-} from "@tests/utils/table-testing/table-operations"
+} from "@tests/utils/table-testing/table-operations.ts"
 import { createBdd } from "playwright-bdd"
 
 import testData from "@/samples/testData"
@@ -110,7 +113,7 @@ Given("I am viewing the application", async ({ page }: World) => {
 
 Given("I have Switched to Table View", async ({ page }: World) => {
   // Try to find the Table View button first
-  const tableViewButton = await page.getByRole('button', { name: 'Switch to Table View' });
+  const tableViewButton = page.getByRole('button', { name: 'Switch to Table View' });
   const tableButtonExists = await tableViewButton.isVisible().catch(() => false);
 
   if (tableButtonExists) {
@@ -452,89 +455,40 @@ Then("I should see a form for creating a new record", async ({ page }: World) =>
   await expect(nameField).toBeVisible()
 })
 
-const newTester = {
-  name: "New Test Record Name",
-  age: "33",
-  email: "new@tester.com"
-};
-
-When("I fill out the form and submit", async ({ page }: World) => {
-  // Find and fill the name field
-  const nameField = page.getByRole("textbox", { name: /name/i })
-  await nameField.fill(newTester.name)
-
-  // Find and fill the age field
-  const ageField = page.getByRole("spinbutton", { name: /age/i })
-  await ageField.fill(newTester.age)
-
-  // Find and fill the role field
-  const emailField = page.getByRole("textbox", { name: /email/i })
-  await emailField.fill(newTester.email)
-
-  // Find and click the submit button
-  const submitButton = page.getByRole("button", { name: /submit|save|create/i })
-  await submitButton.click()
-})
-
 Then("a new row should be added to the table", async ({ page }: World) => {
-  const { tableTester, tableName, tableRole } = await getTableContext(page)
+  const { tableTester, tableName, tableRole } = await getTableContext(page);
+
+  if (!tableTester || !tableName || !tableRole) {
+    throw new Error("Required test context not initialized");
+  }
 
   const table = await tableTester.getTableByRole(
     tableRole as AriaRole,
     tableName,
-  )
+  );
 
-  // Get all rows in the table
-  const rows = await tableTester.getAllRows(table)
+  // Use the verifier function
+  const rowFound = await verifyNewRowAdded({
+    tableTester,
+    table,
+    rowData: newRecordData, // Use the data from the fixture
+  });
 
-  // Skip header row
-  const dataRows = rows.slice(1)
-
-  // Look for our newly added row
-  let foundNewRow = false
-  for (const row of dataRows) {
-    const cells = await tableTester.getCellsInRow(row)
-    const cellContents = await Promise.all(
-      cells.map(cell => tableTester.getCellContent(cell))
-    )
-
-    const rowText = cellContents.join(' ')
-    if (rowText.includes(newTester.name) && rowText.includes(newTester.age) && rowText.includes(newTester.email)) {
-      foundNewRow = true
-      break
-    }
-  }
-
-  expect(foundNewRow).toBeTruthy()
-})
+  // Assert that the row was found
+  expect(
+    rowFound,
+    "Newly added row with expected data not found in table",
+  ).toBeTruthy();
+});
 
 Then("that row should be removed from the table", async ({ page }: World) => {
-  const { tableTester, tableName, tableRole } = await getTableContext(page)
+  const { tableTester, tableName, tableRole } = await getTableContext(page);
+  const table = await tableTester.getTableByRole(tableRole as AriaRole, tableName);
+  const deletedRowIndex = 2; // Or get this dynamically if needed
 
-  const table = await tableTester.getTableByRole(
-    tableRole as AriaRole,
-    tableName,
-  )
-
-  // The row index we're checking for deletion
-  const deletedRowIndex = 2
-
-  // Get all rows in the table
-  const rows = await tableTester.getAllRows(table)
-
-  // Skip header row
-  const dataRows = rows.slice(1)
-
-  // Check if the deleted row still exists
-  let rowFound = false
-  for (const row of dataRows) {
-    const rowIndexAttr = await tableTester.getAttribute(row, 'data-row-index')
-    if (rowIndexAttr === String(deletedRowIndex)) {
-      rowFound = true
-      break
-    }
+  try {
+    await verifyRowIsRemoved({ tableTester, table, rowIndexToRemove: deletedRowIndex });
+  } catch (error: any) {
+    expect(error, error.message).toBeUndefined();
   }
-
-  // Verify the row was removed
-  expect(rowFound).toBeFalsy()
-})
+});

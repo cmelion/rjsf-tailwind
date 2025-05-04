@@ -1,5 +1,5 @@
 // tests/utils/table-testing/playwright-element-adapter.ts
-import { ElementAdapter } from './element-adapter';
+import { ElementAdapter } from './element-adapter.ts';
 import { Page } from '@playwright/test';
 
 export class PlaywrightElementAdapter implements ElementAdapter {

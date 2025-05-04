@@ -1,6 +1,6 @@
 // tests/utils/table-testing/rtl-element-adapter.ts
 import { act, fireEvent, screen, within } from "@testing-library/react"
-import { ElementAdapter } from './element-adapter';
+import { ElementAdapter } from './element-adapter.ts';
 
 export class RTLElementAdapter implements ElementAdapter {
   async findByRole(container: any, role: string, options: any = {}) {

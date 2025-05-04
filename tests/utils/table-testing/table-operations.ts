@@ -1,6 +1,6 @@
 ;
 // tests/utils/table-testing/table-operations.ts
-import { TableTester } from "./types";
+import { TableTester } from "./types.ts";
 
 
 /**
@@ -193,45 +193,3 @@ export async function confirmColumnIsHidden({
   return true;
 }
 
-// tests/utils/table-testing/table-operations.ts
-// Add this new function export
-
-/**
- * Verifies that a new row with the specified data exists in the table
- */
-export async function confirmNewRowAdded({
-                                          tableTester,
-                                          table,
-                                          rowData,
-                                        }: {
-  tableTester: TableTester;
-  table: any;
-  rowData: Record<string, string | number>;
-}): Promise<boolean> {
-  // Get all rows in the table
-  const rows = await tableTester.getAllRows(table);
-
-  // Skip header row
-  const dataRows = rows.slice(1);
-
-  // Look for our newly added row
-  for (const row of dataRows) {
-    const cells = await tableTester.getCellsInRow(row);
-    const cellContents = await Promise.all(
-      cells.map(cell => tableTester.getCellContent(cell))
-    );
-
-    const rowText = cellContents.join(' ');
-
-    // Check if all expected values are in the row text
-    const containsAllValues = Object.values(rowData).every(value =>
-      rowText.includes(String(value))
-    );
-
-    if (containsAllValues) {
-      return true;
-    }
-  }
-
-  return false;
-}

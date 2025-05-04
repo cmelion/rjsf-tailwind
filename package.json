@@ -6,6 +6,7 @@
     "// Development & Build": "",
     "dev": "vite",
     "build": "tsc && vite build",
+    "prepare": "husky install",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "postinstall": "node remove-vitest-chai-file.cjs && node generate-parameter-types.cjs",
@@ -105,5 +106,8 @@
   "resolutions": {
     "read-pkg": "^9.0.0",
     "unicorn-magic": "0.3.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   }
 }

@@ -1,7 +1,7 @@
 // tests/utils/table-testing/base-table-tester.ts
 import { AriaRole } from '../types';
 import { TableTester, TableRoles, TableElement, TableHeaderElement, TableRowElement, TableCellElement } from './types';
-import { ElementAdapter } from './element-adapter';
+import { ElementAdapter } from '../adapters/element-adapter.ts';
 
 export class BaseTableTester implements TableTester {
   constructor(private adapter: ElementAdapter) {}

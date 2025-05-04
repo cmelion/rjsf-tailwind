@@ -13,13 +13,16 @@ Feature: Tailwind Table operations that require an Application Context
     When I view the "Data records table" as a grid
     And I click the "Expand row" button for row 2
     Then I should see an "Edit record form" for row 2
+    # Using table-specific step to avoid conflict
     When I update "Name" in the edit form
     Then the row data should be updated with my changes
 
   Scenario: Creating a new row
     When I view the "Data records table" as a grid
     And I click the "Add new record" button
+    # Using table-specific step to avoid conflict
     Then I should see a form for creating a new record
+    # Using table-specific step to avoid conflict
     When I fill out the form and submit
     Then a new row should be added to the table
 

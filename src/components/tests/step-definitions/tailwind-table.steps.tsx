@@ -7,7 +7,6 @@ import { act, render } from "@testing-library/react"
 import { createRTLTableTester } from "@tests/utils/table-testing/factory"
 import {
   confirmColumnIsHidden,
-  confirmNewRowAdded,
   executeDataTableInput,
   executeTableClick,
   openColumnSelectorMenu,
@@ -19,6 +18,8 @@ import {
   verifyColumnHeaders,
   verifyColumnValues,
   verifyEditForm,
+  verifyNewRowAdded,
+  verifyRowIsRemoved,
   verifyTableData,
 } from "@tests/utils/table-testing/verifiers"
 import { AriaRole } from "@tests/utils/types.ts"
@@ -475,40 +476,27 @@ Then("the row data should be updated with my changes", async (world: TestWorld) 
 });
 
 Then("that row should be removed from the table", async (world: TestWorld) => {
-  const { tableTester, tableName, tableRole } = world;
+  const { tableTester, tableName, tableRole } = world
 
   if (!tableTester || !tableName || !tableRole) {
-    throw new Error("Required test context not initialized");
+    throw new Error("Required test context not initialized")
   }
 
-  const table = await tableTester.getTableByRole(tableRole, tableName);
+  const table = await tableTester.getTableByRole(tableRole, tableName)
+  const deletedRowIndex = 2 // Or get this dynamically if needed
 
-  // The row index we're checking for deletion
-  const deletedRowIndex = 2;
-
-  // Get all rows in the table
-  const rows = await tableTester.getAllRows(table);
-
-  // Skip header row
-  const dataRows = rows.slice(1);
-
-  // Check if the deleted row still exists
-  let rowFound = false;
-  for (const row of dataRows) {
-    const rowIndex = await tableTester.getAttribute(row, 'data-row-index');
-    if (rowIndex === String(deletedRowIndex)) {
-      rowFound = true;
-      break;
-    }
+  try {
+    // Note: confirmRowIsRemoved now handles the assertion internally
+    await verifyRowIsRemoved({
+      tableTester,
+      table,
+      rowIndexToRemove: deletedRowIndex,
+    })
+  } catch (error: any) {
+    // If confirmRowIsRemoved throws (e.g., assertion fails), fail the test
+    expect.fail(error.message)
   }
-
-  // Verify the row was removed
-  expect(
-    rowFound,
-    `Row ${deletedRowIndex} was still found in the table after deletion`
-  ).toBe(false);
-});
-
+})
 Then("I should see a form for creating a new record", async (world: TestWorld) => {
   const { tableTester } = world;
 
@@ -600,7 +588,7 @@ Then("a new row should be added to the table", async (world: TestWorld) => {
 
   const table = await tableTester.getTableByRole(tableRole, tableName);
 
-  const rowFound = await confirmNewRowAdded({
+  const rowFound = await verifyNewRowAdded({
     tableTester,
     table,
     rowData: newTester

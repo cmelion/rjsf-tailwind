@@ -1,4 +1,4 @@
-import type { TableTester } from '../types';
+import type { TableTester } from '../types.ts';
 /**
  * Verifies that an edit form for a row contains the expected fields and values
  */

@@ -68,7 +68,7 @@ export const useStore = create<AppState>((set, get) => ({
   schema: testData.schema as JSONSchema7 | RJSFSchema,
   uiSchema: testData.uiSchema,
   formData: testData.formData,
-  label: "testData",
+  label: "Test Data",
   loading: false,
   error: null,
   availableSamples: [],

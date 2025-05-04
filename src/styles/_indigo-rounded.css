@@ -155,4 +155,12 @@
         color: rgb(var(--ir-primary));
         font-weight: 600;
     }
+
+    .indigo-rounded .overflow-x-auto {
+        border-radius: var(--ir-radius);
+        border-color: rgb(var(--ir-primary)); /* Use primary indigo color */
+        /* Optionally ensure border width/style if not set by default */
+        border-width: 1px;
+        border-style: solid;
+    }
 }

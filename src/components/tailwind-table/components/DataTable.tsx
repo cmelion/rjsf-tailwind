@@ -28,7 +28,7 @@ export function DataTable({
   const captionId = useId();
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="border-bg-muted overflow-x-auto border">
       <table
         id={tableId}
         className="w-full divide-y"

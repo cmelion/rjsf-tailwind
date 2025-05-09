@@ -39,6 +39,9 @@ export default function TextareaWidget<
   const _onFocus = ({ target: { value } }: FocusEvent<HTMLTextAreaElement>) =>
     onFocus(id, value)
 
+  // Convert null to empty string to avoid React warnings
+  const safeValue = value === null ? "" : value
+
   return (
     <div className="flex">
       <textarea
@@ -48,7 +51,7 @@ export default function TextareaWidget<
         placeholder={placeholder}
         disabled={disabled}
         readOnly={readonly}
-        value={value}
+        value={safeValue}
         required={required}
         autoFocus={autofocus}
         rows={options.rows || 5}

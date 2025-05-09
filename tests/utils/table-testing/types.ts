@@ -1,5 +1,6 @@
 // tests/utils/table-testing/types.ts
-import { AriaRole  } from "../types";
+import { AriaRole } from "../types";
+import { BaseComponentTester } from "../component-testing/base-component-tester";
 
 // Import the common types from our project
 export type TableElement = any;
@@ -27,7 +28,7 @@ export const TableRoles = {
 // Type for role strings accepted by both Playwright and RTL
 // export type TableRole = typeof TableRoles[keyof typeof TableRoles];
 
-export interface TableTester {
+export interface TableTester extends BaseComponentTester {
   getAttribute(element: any, attributeName: string): Promise<string | null>;
   getAllColumnHeaders(table: TableElement): Promise<TableHeaderElement[]>;
   getAllRows(table: TableElement): Promise<TableRowElement[]>;

@@ -64,7 +64,11 @@ export default function CheckboxesWidget<
 
           return (
             <div
-              key={option.value}
+              key={
+                typeof option.value === "object"
+                  ? JSON.stringify(option.value)
+                  : String(option.value)
+              }
               className={`flex items-center ${inline ? "space-x-2" : ""}`}
             >
               <input

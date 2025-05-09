@@ -73,6 +73,18 @@ export const useStore = create<AppState>((set, get) => ({
   error: null,
   availableSamples: [],
 
+  // Add a reset method that components can call when mounting
+  resetState: () => {
+    set({
+      schema: testData.schema as JSONSchema7 | RJSFSchema,
+      uiSchema: testData.uiSchema,
+      formData: testData.formData,
+      label: "Test Data",  // Reset the label to avoid conflicts
+      error: null,
+      loading: false
+    });
+  },
+
   fetchSamples: async () => {
     if (get().availableSamples.length > 0 || get().loading) {
       return;
@@ -102,7 +114,18 @@ export const useStore = create<AppState>((set, get) => ({
 
   fetchSample: async (sampleName: string) => {
     try {
+      // Set loading state to true
       set({ loading: true, error: null });
+
+      // Clear previous state completely before loading new data
+      // This prevents state bleed between samples
+      set({
+        schema: {},
+        uiSchema: {},
+        formData: {}
+      });
+
+      // Now fetch and process the new sample
       const sample = await getSampleByName(sampleName);
 
       // Process schema to handle large enums
@@ -114,10 +137,11 @@ export const useStore = create<AppState>((set, get) => ({
         processedUiSchema = processUiSchema(sample.uiSchema);
       }
 
+      // Set the new state with the processed data
       set({
         schema: processedSchema as JSONSchema7 | RJSFSchema,
         uiSchema: processedUiSchema,
-        formData: sample.formData as object,
+        formData: sample.formData || {},
         loading: false
       });
     } catch (error) {

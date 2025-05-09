@@ -3,17 +3,18 @@ import { RJSFSchema } from "@rjsf/utils";
 import { JSONSchema7 } from "json-schema";
 
 export interface AppState {
-  schema: JSONSchema7 | RJSFSchema;
-  uiSchema: object;
+  availableSamples: string[];
+  error: string | null;
+  fetchSample: (sampleName: string) => Promise<void>;
+  fetchSamples: () => Promise<void>;
   formData: object;
   label: string;
   loading: boolean;
-  error: string | null;
-  availableSamples: string[];
-  fetchSamples: () => Promise<void>;
-  fetchSample: (sampleName: string) => Promise<void>;
+  resetState: () => void;
+  schema: JSONSchema7 | RJSFSchema;
   setLabel: (label: string) => void;
+  uiSchema: object;
+  updateFormData: (formData: object) => void;
   updateSchema: (schema: JSONSchema7 | RJSFSchema) => void;
   updateUiSchema: (uiSchema: object) => void;
-  updateFormData: (formData: object) => void;
 }

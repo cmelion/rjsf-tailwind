@@ -1,37 +1,18 @@
 // tests/step-definitions/tailwind-table.steps.ts
-import * as TailwindTableStories from "../../src/components/tailwind-table/TailwindTable.stories"
-import { createPlaywrightTableTester } from "../utils/table-testing/factory"
-import { TableTester } from "../utils/table-testing/types"
-import {
-  verifyActionButtons,
-  verifyColumnHeaders,
-  verifyColumnValues,
-  verifyEditForm,
-  verifyNewRowAdded,
-  verifyRowIsRemoved,
-  verifyTableData,
-} from "../utils/table-testing/verifiers"
-import { AriaRole } from "../utils/types"
-import { newRecordData } from "../fixtures/form-data"
-import { expect, Page } from "@playwright/test"
-import {
-  executeDataTableInput,
-  executeTableClick,
-  openColumnSelectorMenu,
-  toggleColumnVisibility,
-  confirmColumnIsHidden,
-} from "@tests/utils/table-testing/table-operations.ts"
-import { createBdd } from "playwright-bdd"
-
-import testData from "@/samples/testData"
+import * as TailwindTableStories from "../../src/components/tailwind-table/TailwindTable.stories";
+import { newRecordData } from "../fixtures/form-data";
+import { createPlaywrightTableTester } from "../utils/table-testing/factory";
+import { TableTester } from "../utils/table-testing/types";
+import { verifyActionButtons, verifyColumnHeaders, verifyColumnValues, verifyEditForm, verifyNewRowAdded, verifyRowIsRemoved, verifyTableData } from "../utils/table-testing/verifiers";
+import { AriaRole, World } from "../utils/types";
+import { expect, Page } from "@playwright/test";
+import { confirmColumnIsHidden, executeDataTableInput, executeTableClick, openColumnSelectorMenu, toggleColumnVisibility } from "@tests/utils/table-testing/table-operations.ts";
+import { createBdd } from "playwright-bdd";
+import testData from "@/samples/testData";
 
 // Create the BDD object
 const { Given, When, Then } = createBdd()
 
-// Define types for step parameters and world
-type World = {
-  page: Page
-}
 
 // Collection of data that needs to be passed between steps
 type TableContext = {
@@ -121,18 +102,22 @@ Given("I have Switched to Table View", async ({ page }: World) => {
     await tableViewButton.click();
   } else {
     // Check if we're already in Table View by looking for the Form View button
-    const formViewButton = page.getByRole('button', { name: 'Switch to Form View' });
-    const formButtonExists = await formViewButton.isVisible().catch(() => false);
+    const formViewButton = page.getByRole("button", {
+      name: "Switch to Form View",
+    })
+    const formButtonExists = await formViewButton.isVisible().catch(() => false)
 
     if (!formButtonExists) {
       // Neither button found - we're in an unexpected state
-      throw new Error('Could not find either "Switch to Table View" or "Switch to Form View" buttons');
+      throw new Error(
+        'Could not find either "Switch to Table View" or "Switch to Form View" buttons',
+      )
     }
     // If formButtonExists is true, we're already in Table View - continue
   }
 
   // Initialize test data in the page - simulating store state for Playwright
-  await page.evaluate((data) => {
+  await page.evaluate((data: any) => {
     // @ts-expect-error Adding test data to window
     window.__APP_STATE = data;
   }, testData);
@@ -152,7 +137,7 @@ When(
 
     // Store context data in the page's storage state
     await page.evaluate(
-      (contextData) => {
+      (contextData: any) => {
         // @ts-expect-error Using window for storage between steps
         window.__TABLE_TEST_CONTEXT = contextData
       },

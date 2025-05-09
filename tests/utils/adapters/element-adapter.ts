@@ -5,6 +5,7 @@ export interface ElementAdapter {
   findAllByRole(container: any, role: string, options?: any): Promise<any[]>;
   findByAttribute(role: string, attr: string, value: any): Promise<any>;
   findByRole(container: any, role: string, options?: any): Promise<any>;
+  findFormByLabel(label: string | RegExp): Promise<any | null>;
   getAttribute(element: any, attr: string): Promise<string | null>;
   getTextContent(element: any): Promise<string>;
   hasElement(element: any, selector: string): Promise<boolean>;

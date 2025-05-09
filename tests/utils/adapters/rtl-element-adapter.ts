@@ -61,6 +61,12 @@ export class RTLElementAdapter implements ElementAdapter {
     throw new Error(`No element with role "${role}" and attribute "${attr}" matching "${value}" found.`);
   }
 
+  async findFormByLabel(label: string | RegExp) {
+    // Fallback: select the form with class "rjsf"
+    const form = document.querySelector('form.rjsf');
+    return form || null;
+  }
+
   async clear(element: any) {
     fireEvent.change(element, { target: { value: '' } });
   }
@@ -68,4 +74,5 @@ export class RTLElementAdapter implements ElementAdapter {
   async type(element: any, value: string) {
     fireEvent.change(element, { target: { value } });
   }
+
 }

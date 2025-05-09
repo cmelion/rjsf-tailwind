@@ -15,6 +15,14 @@ export class PlaywrightElementAdapter implements ElementAdapter {
     return target.getByRole(role, options).all();
   }
 
+  async findFormByLabel(label: string | RegExp) {
+    // Try to find a form by accessible name
+    const form = await this.findByRole(undefined, 'form', { name: label }).catch(() => null);
+    if (form) return form;
+    // Fallback: try dialog by accessible name
+    return this.findByRole(undefined, 'dialog', { name: label }).catch(() => null);
+  }
+
   async getTextContent(element: any) {
     return (await element.textContent()) || '';
   }

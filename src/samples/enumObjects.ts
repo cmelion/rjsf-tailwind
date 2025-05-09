@@ -2,7 +2,6 @@ export default {
   schema: {
     definitions: {
       locations: {
-        enumNames: ['New York', 'Amsterdam', 'Hong Kong'],
         enum: [
           {
             name: 'New York',
@@ -51,6 +50,7 @@ export default {
     },
   },
   uiSchema: {
+    enumNames: ['New York', 'Amsterdam', 'Hong Kong'],
     locationRadio: {
       'ui:widget': 'RadioWidget',
     },

@@ -9,7 +9,8 @@ const selector = (state: AppState) => ({
   availableSamples: state.availableSamples,
   loading: state.loading,
   error: state.error,
-  fetchSamples: state.fetchSamples
+  fetchSamples: state.fetchSamples,
+  resetState: state.resetState
 })
 
 function classNames(...classes: any) {
@@ -17,14 +18,15 @@ function classNames(...classes: any) {
 }
 
 export default function Samples() {
-  const { label, setLabel, availableSamples, loading, error, fetchSamples } = useStore(selector)
+  const { label, setLabel, availableSamples, loading, error, fetchSamples, resetState } = useStore(selector)
 
   // Only fetch samples if we don't already have them
   useEffect(() => {
+    resetState();
     if (availableSamples.length === 0) {
       fetchSamples()
     }
-  }, [fetchSamples, availableSamples.length])
+  }, [fetchSamples, resetState, availableSamples.length])
 
 
 
@@ -64,6 +66,8 @@ export default function Samples() {
         <div className="flex flex-wrap gap-2" aria-label="Tabs">
           {availableSamples.map((sample) => (
             <button
+              aria-label={sample}
+              role="button"
               key={sample}
               className={classNames(
                 sample === label

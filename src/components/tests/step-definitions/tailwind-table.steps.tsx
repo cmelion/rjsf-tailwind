@@ -1,8 +1,5 @@
 // src/components/tests/step-definitions/tailwind-table.steps.tsx
-import * as AppStories from "@/App.stories"
-import * as TailwindTableStories from "../../tailwind-table/TailwindTable.stories.tsx"
 import { useStore } from "@/store" // <-- Import the Zustand store hook
-import { composeStories } from "@storybook/react"
 import { act, render } from "@testing-library/react"
 import { createRTLTableTester } from "@tests/utils/table-testing/factory"
 import {
@@ -12,7 +9,7 @@ import {
   openColumnSelectorMenu,
   toggleColumnVisibility,
 } from "@tests/utils/table-testing/table-operations"
-import { TableTester } from "@tests/utils/table-testing/types"
+
 import {
   verifyActionButtons,
   verifyColumnHeaders,
@@ -25,39 +22,7 @@ import {
 import { AriaRole } from "@tests/utils/types.ts"
 import { Given, Then, When } from "quickpickle"
 import { expect } from "vitest"
-
-// Compose stories
-// With this lazy loading approach:
-let componentStoriesCache: ReturnType<typeof composeStories<typeof TailwindTableStories>> | null = null;
-let appStoriesCache: ReturnType<typeof composeStories<typeof AppStories>> | null = null;
-
-// Lazy getters that compose stories only when needed
-const getComponentStories = () => {
-  if (!componentStoriesCache) {
-    componentStoriesCache = composeStories(TailwindTableStories);
-  }
-  return componentStoriesCache;
-};
-
-const getAppStories = () => {
-  if (!appStoriesCache) {
-    appStoriesCache = composeStories(AppStories);
-  }
-  return appStoriesCache;
-};
-
-// Create type for world object
-type TestWorld = {
-  component: any;
-  filterCriteria?: Array<{ placeholder?: string; value: string }>;
-  formData?: any; // Data from component story OR store in App context
-  schema?: any; // Schema from component story OR store in App context
-  storyName?: keyof ReturnType<typeof getComponentStories>;
-  tableName?: string;
-  tableRole?: AriaRole;
-  tableTester?: TableTester;
-  context?: 'component' | 'app'; // <-- Add context flag
-};
+import { getComponentStories, type TestWorld } from "./shared.steps.tsx"
 
 // --- Step Definitions ---
 
@@ -77,27 +42,6 @@ Given("I have some initial data records", async (world: TestWorld) => {
     world.storyName = "Default";
     world.context = 'component'; // Set context
   }
-});
-
-// App Context Setup
-Given("I am viewing the application", async (world: TestWorld) => {
-  const AppStory = getAppStories().Default; // Or choose a specific App state story
-  if (!AppStory) {
-    throw new Error("Default App story not found.");
-  }
-
-  // Render the chosen App story
-  await act(async () => {
-    render(<AppStory />);
-  });
-
-  // Initialize the table tester for interacting with the DOM
-  world.tableTester = createRTLTableTester();
-  world.context = 'app'; // Set context
-  world.schema = undefined; // Explicitly clear schema/data from component context
-  world.formData = undefined;
-  world.storyName = undefined; // This is now valid as storyName is optional
-  // NOTE: Store state will be accessed in the 'When I view...' step
 });
 
 When("I have Switched to Table View", async (world: TestWorld) => {
@@ -524,7 +468,6 @@ const newTester = {
   email: "new@tester.com"
 };
 
-// Fix for the errors in the "I fill out the form and submit" step
 When("I fill out the form and submit", async (world: TestWorld) => {
   const { tableTester } = world;
 

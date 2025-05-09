@@ -1,12 +1,12 @@
 // tests/utils/factory.ts
 import { Page } from "@playwright/test";
-import { createRTLFormTester } from "./form-testing/factory";
-import { createPlaywrightFormTester } from "./form-testing/factory";
-import { createRTLTableTester } from "./table-testing/factory";
-import { createPlaywrightTableTester } from "./table-testing/factory";
-import { FormTester } from "./form-testing/types";
-import { TableTester } from "./table-testing/types";
-import { BaseComponentTester } from "./component-testing/base-component-tester";
+import { createRTLFormTester } from "./utils/form-testing/factory";
+import { createPlaywrightFormTester } from "./utils/form-testing/factory";
+import { createRTLTableTester } from "./utils/table-testing/factory";
+import { createPlaywrightTableTester } from "./utils/table-testing/factory";
+import { FormTester } from "./utils/form-testing/types";
+import { TableTester } from "./utils/table-testing/types";
+import { BaseComponentTester } from "./utils/component-testing/base-component-tester";
 import { TestRunnerType } from "@/components/tests/types";
 
 export function createTester(
@@ -44,5 +44,5 @@ export function createWorldTester<T extends BaseComponentTester>(
   world: { runner: TestRunnerType; page?: Page },
   type: "form" | "table"
 ): T {
-  return createTester(type, world.runner, { page: world.page }) as T;
+  return createTester(type, world.runner, { page: world.page }) as unknown as T;
 }

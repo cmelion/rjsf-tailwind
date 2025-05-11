@@ -44,6 +44,13 @@ const componentsTestConfig = {
     reportsDirectory: './coverage/components',
     // Only include src files in coverage reports
     include: ['src/**'],
+    exclude: [
+      'src/main.tsx',
+      'src/userWorker.ts',
+      'src/mocks/browser.ts',
+      'src/components/tests/mocks/monaco-workers.mock.ts',
+      'src/components/tests/step-definitions/tailwind-form.steps',
+    ]
   },
 };
 

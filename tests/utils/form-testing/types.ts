@@ -18,12 +18,13 @@ export interface ButtonElement extends FormElement {
 export interface FormTester extends BaseComponentTester {
   adapter: ElementAdapter;
 
-  // Form-specific methods
-  findFormByLabel(label: string | RegExp): Promise<FormElement | null>;
-  findFieldByRole(role: AriaRole, options: { name: string | RegExp }, container?: FormElement): Promise<InputElement | null>;
-  findButtonByRole(role: AriaRole, options: { name: string | RegExp }, container?: FormElement): Promise<ButtonElement | null>;
+  // form-specific methods
   clear(element: InputElement): Promise<void>;
-  type(element: InputElement, value: string): Promise<void>;
+  findButtonByRole(role: AriaRole, options: { name: string | RegExp }, container?: FormElement): Promise<ButtonElement | null>;
+  findElementByText(text: string | RegExp, container?: any): Promise<any>;
+  findFieldByRole(role: AriaRole, options: { name: string | RegExp }, container?: FormElement): Promise<InputElement | null>;
+  findFormByLabel(label: string | RegExp): Promise<FormElement | null>;
   getAttribute(element: FormElement, attributeName: string): Promise<string | null>;
+  type(element: InputElement, value: string): Promise<void>;
   waitForElementByRole(role: string, options: { name?: string | RegExp, timeout?: number }, container?: FormElement): Promise<FormElement | null>;
 }

@@ -4,8 +4,10 @@ import { JSONSchema7 } from "json-schema";
 import { create } from "zustand";
 import { AppState } from "./types/store";
 import { getSamplesList, getSampleByName } from "./api";
-import { templateComponents } from "@/templates";
+import { templateComponents } from "@/components/rjsf/custom-templates";
 import testData from './samples/testData'
+import { validatePassword } from "@/components/rjsf/validations";
+import { ageErrorTransformer } from "@/components/rjsf/error-transfomers";
 
 // List of UI keys that should be mapped to template components
 const templateKeys = ["ui:ObjectFieldTemplate", "ui:field", "ui:ArrayFieldTemplate", "ui:widget"];
@@ -64,6 +66,24 @@ function processUiSchema(obj: any): any {
   return result;
 }
 
+function processValidationAndTransformers(sample: any) {
+  const result: any = {};
+
+  if (sample.validate && typeof sample.validate === "string") {
+    if (sample.validate === "validatePassword") {
+      result.customValidate = validatePassword;
+    }
+  }
+
+  if (sample.transformErrors && typeof sample.transformErrors === "string") {
+    if (sample.transformErrors === "ageErrorTransformer") {
+      result.transformErrors = ageErrorTransformer;
+    }
+  }
+
+  return result;
+}
+
 export const useStore = create<AppState>((set, get) => ({
   schema: testData.schema as JSONSchema7 | RJSFSchema,
   uiSchema: testData.uiSchema,
@@ -102,7 +122,7 @@ export const useStore = create<AppState>((set, get) => ({
       if (samplesList.length > 0 && !get().label) {
         const firstSample = samplesList[1];
         set({ label: firstSample });
-        get().fetchSample(firstSample);
+        await get().fetchSample(firstSample);
       }
     } catch (error) {
       set({
@@ -136,12 +156,15 @@ export const useStore = create<AppState>((set, get) => ({
       if (sample.uiSchema && typeof sample.uiSchema === 'object') {
         processedUiSchema = processUiSchema(sample.uiSchema);
       }
+      const { customValidate, transformErrors } = processValidationAndTransformers(sample);
 
       // Set the new state with the processed data
       set({
         schema: processedSchema as JSONSchema7 | RJSFSchema,
         uiSchema: processedUiSchema,
         formData: sample.formData || {},
+        customValidate,
+        transformErrors,
         loading: false
       });
     } catch (error) {

@@ -3,7 +3,7 @@
 @layer components {
     /* Define indigo-rounded theme using consistent CSS variables */
     .indigo-rounded {
-        /* Theme colors and properties */
+        /* theme colors and properties */
         --ir-primary: 79, 70, 229;        /* indigo-500 */
         --ir-primary-text: 255, 255, 255; /* white */
         --ir-border: 161, 161, 170;       /* gray-300 */
@@ -44,7 +44,7 @@
         border-color: rgb(var(--ir-border));
     }
 
-    /* Form inputs focus styling */
+    /* form inputs focus styling */
     .indigo-rounded [type="text"]:focus,
     .indigo-rounded [type="email"]:focus,
     .indigo-rounded [type="url"]:focus,

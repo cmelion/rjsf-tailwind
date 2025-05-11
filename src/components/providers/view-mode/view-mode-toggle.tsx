@@ -9,7 +9,7 @@ export function ViewModeToggle() {
       onClick={toggleViewMode}
       className="default-button"
     >
-      {viewMode === "form" ? "Switch to Table View" : "Switch to Form View"}
+      {viewMode === "form" ? "Switch to Table View" : "Switch to form View"}
     </button>
   )
 }

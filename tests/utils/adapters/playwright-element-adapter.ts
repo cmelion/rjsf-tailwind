@@ -90,4 +90,10 @@ export class PlaywrightElementAdapter implements ElementAdapter {
   async type(element: any, value: string) {
     await element.fill(value);
   }
+
+  async findByText(container: any, text: string | RegExp) {
+    const target = container || this.page;
+    return target.getByText(text).first();
+  }
+
 }

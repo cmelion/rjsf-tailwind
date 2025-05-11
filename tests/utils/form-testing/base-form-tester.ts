@@ -47,4 +47,8 @@ export class BaseFormTester
 
     return null
   }
+
+  async findElementByText(text: string | RegExp, container?: FormElement): Promise<FormElement | null> {
+    return this.adapter.findByText(container, text);
+  }
 }

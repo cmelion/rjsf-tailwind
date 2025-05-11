@@ -1,8 +1,8 @@
-import Form from "./Form/Form"
+import Form from "@/components/rjsf/form/Form"
 
-export { default as Form, generateForm } from "./Form"
-export { default as Templates, generateTemplates } from "./Templates"
-export { default as Theme, generateTheme } from "./Theme"
-export { default as Widgets, generateWidgets } from "./Widgets"
+export { default as Form, generateForm } from "./form"
+export {  generateTemplates } from "./templates"
+export { generateTheme } from "./theme"
+export { default as Widgets, generateWidgets } from "./widgets"
 
 export default Form

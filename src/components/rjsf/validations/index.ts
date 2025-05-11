@@ -1,0 +1,1 @@
+export {validatePassword} from './validatePassword';

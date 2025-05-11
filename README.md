@@ -106,11 +106,10 @@ yarn install
 
 ##🧪 Testing Strategy
 
-This project employs a multi-layered testing approach:
+This project employs a multi-layered testing approach. Feature files (`*.feature`) define application behavior in Gherkin syntax.:
 
-1.  **Component Tests (Vitest):** Located alongside components (e.g., `*.test.tsx`), these tests use Vitest and React Testing Library to verify individual component logic and rendering in isolation. Run with `yarn test:components`. Coverage reports are generated via `yarn test:components:coverage`.
-2.  **BDD/E2E Tests (Playwright/QuickPickle):** Feature files (`*.feature`) define application behavior in Gherkin syntax. Step definitions (`*.steps.ts` or `*.steps.tsx`) implement these behaviors using Playwright to interact with the browser (often against Storybook stories or the main app). Run with `yarn test:bdd`. These tests ensure features work correctly from a user's perspective. BDD test reports are generated automatically during the CI process.
-3.  **Storybook Interaction Tests:** Storybook's `play` functions are used within stories (`*.stories.tsx`) to simulate user interactions and assert component states directly within the Storybook environment.
+1.  **Component Tests (Vitest):** Located alongside components (e.g., `*.steps.tsx`), these tests use Vitest and React Testing Library to verify individual component logic and rendering in isolation. Run with `yarn test:components`. Coverage reports are generated via `yarn test:components:coverage`.
+2.  **BDD/E2E Tests (Playwright/QuickPickle):**  Step definitions (`*.steps.ts`) implement these behaviors using Playwright to interact with the browser (often against Storybook stories or the main app). Run with `yarn test:bdd`. These tests ensure features work correctly from a user's perspective. BDD test reports are generated automatically during the CI process.
 
 ## ⚙️ CI/CD
 

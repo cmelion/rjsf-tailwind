@@ -89,7 +89,7 @@ Given("I am viewing the application", async ({ page }: World) => {
   await page.waitForSelector('.container', { state: 'visible' })
 
   // Wait for a key UI element that indicates the app is interactive
-  await page.waitForSelector('h3:has-text("Tailwind Form")', { state: 'visible', timeout: 5000 })
+  await page.waitForSelector('h3:has-text("Tailwind form")', { state: 'visible', timeout: 5000 })
 })
 
 Given("I have Switched to Table View", async ({ page }: World) => {
@@ -101,7 +101,7 @@ Given("I have Switched to Table View", async ({ page }: World) => {
     // Found the button we want to click, so click it
     await tableViewButton.click();
   } else {
-    // Check if we're already in Table View by looking for the Form View button
+    // Check if we're already in Table View by looking for the form View button
     const formViewButton = page.getByRole("button", {
       name: "Switch to Form View",
     })
@@ -110,7 +110,7 @@ Given("I have Switched to Table View", async ({ page }: World) => {
     if (!formButtonExists) {
       // Neither button found - we're in an unexpected state
       throw new Error(
-        'Could not find either "Switch to Table View" or "Switch to Form View" buttons',
+        'Could not find either "Switch to Table View" or "Switch to form View" buttons',
       )
     }
     // If formButtonExists is true, we're already in Table View - continue

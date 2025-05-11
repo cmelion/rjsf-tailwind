@@ -5,7 +5,7 @@ import {
   StrictRJSFSchema
 } from "@rjsf/utils"
 import { ComponentType, FormEvent } from "react"
-import { generateTheme } from "../Theme"
+import { generateTheme } from "../theme"
 
 /**
  * Custom interface for form change events.
@@ -30,7 +30,7 @@ export type FormChangeHandler<T = any> = (
 ) => void;
 
 /**
- * Generates a themed React JSON Schema Form component
+ * Generates a themed React JSON Schema form component
  *
  * This function uses generics to provide type safety:
  * - T: The type of form data (defaults to any)
@@ -47,4 +47,5 @@ export function generateForm<
   return withTheme<T, S, F>(generateTheme<T, S, F>())
 }
 
-export default generateForm()
+const ThemedForm = generateForm();
+export default ThemedForm;

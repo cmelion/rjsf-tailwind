@@ -23,13 +23,15 @@ import { useStore } from "@/store"
 import { AppState } from "@/types/store"
 
 const selector = (state: AppState) => ({
-  schema: state.schema,
-  uiSchema: state.uiSchema,
+  customValidate: state.customValidate,
   formData: state.formData,
+  schema: state.schema,
+  transformErrors: state.transformErrors,
+  uiSchema: state.uiSchema,
+  updateFormData: state.updateFormData,
   updateSchema: state.updateSchema,
   updateUiSchema: state.updateUiSchema,
-  updateFormData: state.updateFormData,
-})
+});
 
 interface ResponsiveContainerProps {
   heading?: string
@@ -59,13 +61,15 @@ const routes = [{ path: "/", element: <Home /> }]
 
 function Home() {
   const {
-    schema,
-    uiSchema,
+    customValidate,
     formData,
+    schema,
+    transformErrors,
+    uiSchema,
+    updateFormData,
     updateSchema,
     updateUiSchema,
-    updateFormData,
-  } = useStore(selector)
+  } = useStore(selector);
 
   const { formStyle } = useFormStyle()
 
@@ -262,9 +266,11 @@ function Home() {
                         schema={schema}
                         uiSchema={uiSchema}
                         formData={formData}
+                        customValidate={customValidate}
+                        transformErrors={transformErrors}
                         validator={validator}
                         onChange={(data: any) => {
-                          updateFormData(data.formData)
+                          updateFormData(data.formData);
                         }}
                       />
                     ) : (

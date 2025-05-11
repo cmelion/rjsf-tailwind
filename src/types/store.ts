@@ -13,8 +13,10 @@ export interface AppState {
   resetState: () => void;
   schema: JSONSchema7 | RJSFSchema;
   setLabel: (label: string) => void;
+  transformErrors?: (errors: any[]) => any[];
   uiSchema: object;
   updateFormData: (formData: object) => void;
   updateSchema: (schema: JSONSchema7 | RJSFSchema) => void;
   updateUiSchema: (uiSchema: object) => void;
+  customValidate?: (formData: any, errors: any) => any;
 }

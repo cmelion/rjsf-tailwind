@@ -18,7 +18,7 @@ export interface TestWorld {
   context?: "component" | "app";
   storyName?: ComponentStoryName;
 
-  // Form testing
+  // form testing
   formData?: Record<string, any>;
   formTester?: FormTester;
 

@@ -15,7 +15,7 @@ import { useCallback, useMemo, useState } from "react"
 import { FiChevronDown } from "@react-icons/all-files/fi/FiChevronDown"
 import { FiChevronUp } from "@react-icons/all-files/fi/FiChevronUp"
 import { FiTrash2 } from "@react-icons/all-files/fi/FiTrash2"
-import { IChangeEvent } from "@/components/rjsf/form/Form"
+import { IChangeEvent } from "@/components/rjsf/form/"
 import { TableHeader, ColumnFilters, CreateRowForm, DataTable } from "./components"
 
 interface TailwindTableProps {

@@ -2,7 +2,7 @@ import { JSONSchema7 } from "json-schema";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import TailwindForm from "@/components/rjsf";
 import validator from "@rjsf/validator-ajv8";
-import { IChangeEvent } from "@/components/rjsf/form/Form";
+import { IChangeEvent } from "@/components/rjsf/form/";
 import { createElement, useId } from "react";
 
 interface CreateRowFormProps {

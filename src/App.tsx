@@ -234,7 +234,7 @@ function Home() {
                   </div>
 
                   {/* Content panels with conditional visibility */}
-                  <div className={`mt-2 h-[calc(100vh/2-48px)] ${activeTab === "schema" ? "" : "hidden"}`}>
+                  <div className={`flex h-[calc(100vh/2)] flex-col ${activeTab === "schema" ? "" : "hidden"}`}>
                     <JsonEditor
                       editorId="jsonSchemaEditorContainer"
                       jsonData={schema}
@@ -242,7 +242,7 @@ function Home() {
                     />
                   </div>
 
-                  <div className={`mt-2 h-[calc(100vh/2-48px)] ${activeTab === "uiSchema" ? "" : "hidden"}`}>
+                  <div className={`flex h-[calc(100vh/2)] flex-col ${activeTab === "uiSchema" ? "" : "hidden"}`}>
                     <JsonEditor
                       editorId="uiSchemaEditorContainer"
                       jsonData={uiSchema}
@@ -251,7 +251,7 @@ function Home() {
                     />
                   </div>
 
-                  <div className={`mt-2 h-[calc(100vh/2-48px)] ${activeTab === "validateRules" ? "" : "hidden"}`}>
+                  <div className={`flex h-[calc(100vh/2)] flex-col ${activeTab === "validateRules" ? "" : "hidden"}`}>
                     <JsonEditor
                       editorId="validateRulesEditorContainer"
                       jsonData={validateRules || []}
@@ -274,7 +274,7 @@ function Home() {
                   </button>
                 }
               >
-                <div className="flex h-[calc(100vh/2)] flex-col">
+                <div className="flex h-[calc(100vh/3)] flex-col">
                   <JsonEditor
                     editorId="formDataEditorContainer"
                     jsonData={formData}

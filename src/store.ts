@@ -2,12 +2,14 @@
 import { RJSFSchema } from "@rjsf/utils";
 import { JSONSchema7 } from "json-schema";
 import { create } from "zustand";
-import { AppState } from "./types/store";
+import { AppState, ValidationRule } from "./types/store";
 import { getSamplesList, getSampleByName } from "./api";
 import { templateComponents } from "@/components/rjsf/custom-templates";
 import testData from './samples/testData'
 import { validatePassword } from "@/components/rjsf/validations";
 import { ageErrorTransformer } from "@/components/rjsf/error-transfomers";
+import { createJsonRuleValidator } from "@/components/rjsf/validations/jsonRuleValidator";
+import { v4 as uuidv4 } from 'uuid';
 
 // List of UI keys that should be mapped to template components
 const templateKeys = ["ui:ObjectFieldTemplate", "ui:field", "ui:ArrayFieldTemplate", "ui:widget"];
@@ -73,6 +75,8 @@ function processValidationAndTransformers(sample: any) {
     if (sample.validate === "validatePassword") {
       result.customValidate = validatePassword;
     }
+  } else if (sample.validateRules) {
+    result.customValidate = createJsonRuleValidator(sample.validateRules);
   }
 
   if (sample.transformErrors && typeof sample.transformErrors === "string") {
@@ -88,10 +92,12 @@ export const useStore = create<AppState>((set, get) => ({
   schema: testData.schema as JSONSchema7 | RJSFSchema,
   uiSchema: testData.uiSchema,
   formData: testData.formData,
+  formKey: uuidv4(),
   label: "Test Data",
   loading: false,
   error: null,
   availableSamples: [],
+  validateRules: [],
 
   // Add a reset method that components can call when mounting
   resetState: () => {
@@ -137,12 +143,19 @@ export const useStore = create<AppState>((set, get) => ({
       // Set loading state to true
       set({ loading: true, error: null });
 
+      // Generate a new unique key for the form
+      const newFormKey = uuidv4();
+
       // Clear previous state completely before loading new data
       // This prevents state bleed between samples
       set({
         schema: {},
         uiSchema: {},
-        formData: {}
+        formData: {},
+        // Explicitly clear validation functions to prevent them from persisting
+        customValidate: undefined,
+        transformErrors: undefined,
+        formKey: newFormKey
       });
 
       // Now fetch and process the new sample
@@ -165,6 +178,7 @@ export const useStore = create<AppState>((set, get) => ({
         formData: sample.formData || {},
         customValidate,
         transformErrors,
+        validateRules: sample.validateRules || [],
         loading: false
       });
     } catch (error) {
@@ -174,7 +188,6 @@ export const useStore = create<AppState>((set, get) => ({
       });
     }
   },
-
   setLabel: (label: string) => {
     set({ label });
     get().fetchSample(label);
@@ -190,5 +203,42 @@ export const useStore = create<AppState>((set, get) => ({
 
   updateFormData: (formData: object) => {
     set({ formData });
+  },
+
+  updateValidateRules: (rules: ValidationRule[]) => {
+    set({
+      validateRules: rules,
+      customValidate: (formData, errors) => {
+        // Apply validation rules
+        (rules || []).forEach(rule => {
+          // Check conditions
+          let conditionsMet = true;
+
+          if (rule.conditions) {
+            Object.entries(rule.conditions).forEach(([field, condition]) => {
+              // Properly typed now as RuleCondition
+              if ('equal' in condition && formData[field] !== formData[condition.equal]) {
+                conditionsMet = false;
+              }
+              if ('greaterThanEqual' in condition && formData[field] < condition.greaterThanEqual) {
+                conditionsMet = false;
+              }
+            });
+          }
+
+          if (conditionsMet && rule.event && rule.event.params) {
+            const field = rule.event.params.field;
+            const message = rule.event.params.message;
+
+            if (field && errors[field]) {
+              errors[field].addError(message);
+            }
+          }
+        });
+
+        return errors;
+      }
+    });
   }
+
 }));

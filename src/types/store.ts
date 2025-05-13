@@ -8,6 +8,7 @@ export interface AppState {
   fetchSample: (sampleName: string) => Promise<void>;
   fetchSamples: () => Promise<void>;
   formData: object;
+  formKey: string;
   label: string;
   loading: boolean;
   resetState: () => void;
@@ -18,5 +19,32 @@ export interface AppState {
   updateFormData: (formData: object) => void;
   updateSchema: (schema: JSONSchema7 | RJSFSchema) => void;
   updateUiSchema: (uiSchema: object) => void;
+  validateRules?: any[];
+  updateValidateRules: (rules: any[]) => void;
   customValidate?: (formData: any, errors: any) => any;
+}
+
+export interface EqualCondition {
+  equal: string;
+}
+
+export interface GreaterThanEqualCondition {
+  greaterThanEqual: number;
+}
+
+export type RuleCondition = EqualCondition | GreaterThanEqualCondition;
+
+export interface RuleEvent {
+  type: string;
+  params: {
+    message: string;
+    field: string;
+  };
+}
+
+export interface ValidationRule {
+  conditions: {
+    [fieldName: string]: RuleCondition;
+  };
+  event: RuleEvent;
 }

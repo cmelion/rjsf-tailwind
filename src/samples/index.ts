@@ -32,6 +32,7 @@ import options from './options';
 import ifThenElse from './ifThenElse';
 import customField from './customField';
 import testData from './testData';
+import jsonRuleValidation from "./jsonRuleValidation.ts"
 import { SamplesCollection } from '@/types/samples';
 
 export const samples: SamplesCollection = Object.freeze({
@@ -71,6 +72,7 @@ export const samples: SamplesCollection = Object.freeze({
   ErrorSchema: errorSchema,
   Defaults: defaults,
   'Custom Field': customField,
+  'JSON rule validation': jsonRuleValidation,
 } as const);
 
 export type Sample = keyof typeof samples;

@@ -21,6 +21,20 @@ Feature: JSON Schema Form Samples
     Then I should see the error "Passwords don't match"
     And I should see the error "You need to be 18 because of some legal thing"
 
+  Scenario: JSON rules sample shows custom errors for invalid input
+    When I click on the sample button for "JSON rule validation"
+    Then I should see a form rendered correctly
+    And the form title should match "JSON rule validation"
+    When I fill out the form with:
+      | field           | value     | role       |
+      | Password        | abc       | textbox    |
+      | Repeat password | def       | textbox    |
+      | Age             | 17        | spinbutton |
+    And I submit the form
+    Then I should see the error "Passwords don't match"
+    And I should see the error "You need to be 18 because of some legal thing"
+
+
   Scenario Outline: Verify form title for each sample
     When I click on the sample button for "<sample>"
     Then I should see a form rendered correctly

@@ -1,5 +1,8 @@
+;
 // src/components/json-editor/JsonEditor.tsx
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useTheme } from "@/components/providers/theme";
+
 
 // Define types without direct Monaco dependency
 type EditorProps = {
@@ -18,10 +21,45 @@ export default function JsonEditor({
   const editorRef = useRef<any>(); // Changed from monaco.editor.IStandaloneCodeEditor
   const [monaco, setMonaco] = useState<any>(null);
   const [error, setError] = useState<boolean>(false);
+  const { theme } = useTheme();
+
+  // Determine if dark mode is active
+  const isDarkTheme = useCallback(() => {
+    if (typeof window === 'undefined') return false;
+    return theme === 'dark' ||
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }, [theme]);
+
+  // Update Monaco editor theme when application theme changes
+  useEffect(() => {
+    if (!monaco || !editorRef.current) return;
+
+    try {
+      monaco.editor.setTheme(isDarkTheme() ? 'vs-dark' : 'vs-light');
+    } catch (err) {
+      console.error("Failed to update editor theme:", err);
+    }
+  }, [theme, monaco, isDarkTheme]);
 
   // Dynamically load Monaco/mocks and worker configuration
   useEffect(() => {
     let isMounted = true;
+
+    // Create async loader function to properly handle promises
+    const initializeEditor = async () => {
+      try {
+        // Check if in a browser-like environment
+        if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+          await loadMonaco();
+        } else {
+          // If not in a browser env (like bddgen's Node process), load mocks.
+          await loadMocks();
+        }
+      } catch (err) {
+        if (isMounted) setError(true);
+        console.error("Failed to initialize editor:", err);
+      }
+    };
 
     const loadMonaco = async () => {
       try {
@@ -70,13 +108,10 @@ export default function JsonEditor({
       }
     };
 
-    // Check if in a browser-like environment
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      loadMonaco();
-    } else {
-      // If not in a browser env (like bddgen's Node process), load mocks.
-      loadMocks();
-    }
+    initializeEditor().catch(err => {
+      if (isMounted) setError(true);
+      console.error("Unhandled error in editor initialization:", err);
+    });
 
     return () => {
       isMounted = false;
@@ -102,7 +137,7 @@ export default function JsonEditor({
         editorInstance = monaco.editor.create(editorElement, {
           value: JSON.stringify(jsonData, null, 2),
           language: "json",
-          theme: "vs-dark",
+          theme: isDarkTheme() ? "vs-dark" : "vs-light",
           automaticLayout: true,
           ...editorOptions,
         });
@@ -149,7 +184,7 @@ export default function JsonEditor({
         }
       };
     }
-  }, [editorId, jsonData, onChange, editorOptions, monaco, error]);
+  }, [editorId, jsonData, onChange, editorOptions, monaco, error, isDarkTheme]);
 
   // Fallback UI when Monaco fails to load (in browser) or mocks fail
   if (error) {
@@ -158,7 +193,14 @@ export default function JsonEditor({
       return (
         <textarea
           id={editorId}
-          style={{ width: '100%', minHeight: "200px", border: '1px solid grey', fontFamily: 'monospace' }}
+          style={{
+            width: '100%',
+            minHeight: "200px",
+            border: '1px solid grey',
+            fontFamily: 'monospace',
+            backgroundColor: isDarkTheme() ? '#1e1e1e' : '#ffffff',
+            color: isDarkTheme() ? '#d4d4d4' : '#000000',
+          }}
           value={JSON.stringify(jsonData, null, 2)}
           onChange={(e) => onChange?.(e.target.value)}
           readOnly={!onChange}

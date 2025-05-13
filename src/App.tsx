@@ -1,6 +1,6 @@
 import validator from "@rjsf/validator-ajv8"
 import generateSchema from "generate-schema"
-import { ReactNode } from "react"
+import { ReactNode, useState } from "react"
 import { useRoutes } from "react-router-dom"
 import JsonEditor from "@/components/json-editor"
 import {
@@ -25,12 +25,15 @@ import { AppState } from "@/types/store"
 const selector = (state: AppState) => ({
   customValidate: state.customValidate,
   formData: state.formData,
+  formKey: state.formKey,
   schema: state.schema,
   transformErrors: state.transformErrors,
   uiSchema: state.uiSchema,
   updateFormData: state.updateFormData,
   updateSchema: state.updateSchema,
   updateUiSchema: state.updateUiSchema,
+  validateRules: state.validateRules,
+  updateValidateRules: state.updateValidateRules,
 });
 
 interface ResponsiveContainerProps {
@@ -63,13 +66,18 @@ function Home() {
   const {
     customValidate,
     formData,
+    formKey,
     schema,
     transformErrors,
     uiSchema,
     updateFormData,
     updateSchema,
     updateUiSchema,
+    validateRules,
+    updateValidateRules
   } = useStore(selector);
+
+  const [activeTab, setActiveTab] = useState("schema")
 
   const { formStyle } = useFormStyle()
 
@@ -127,6 +135,15 @@ function Home() {
       console.error("Error generating schema:", error)
     }
   }
+
+  const handleValidateRulesChange = (value: string) => {
+    try {
+      const parsedRules = JSON.parse(value);
+      updateValidateRules(parsedRules);
+    } catch (e) {
+      console.error("Invalid validate rules JSON:", e);
+    }
+  };
 
   // Helper function to validate UI schema
   const validateUiSchema = (schema: any): object => {
@@ -192,56 +209,80 @@ function Home() {
         <div className="overflow-hidden  border bg-background shadow">
           <div className="items-start justify-center gap-6 p-8 md:grid md:grid-cols-2">
             <div className="col-span-2 grid items-start gap-6 lg:col-span-1">
-              <ResponsiveContainer heading="JSON Schema">
+              <ResponsiveContainer heading="JSON Editors">
+                <div className="w-full">
+                  {/* Simple tab buttons using Tailwind */}
+                  <div className="flex border-b">
+                    <button
+                      className={`px-4 py-2 text-sm font-medium ${activeTab === "schema" ? "border-b-2 border-primary" : "text-muted-foreground hover:text-foreground"}`}
+                      onClick={() => setActiveTab("schema")}
+                    >
+                      JSON Schema
+                    </button>
+                    <button
+                      className={`px-4 py-2 text-sm font-medium ${activeTab === "uiSchema" ? "border-b-2 border-primary" : "text-muted-foreground hover:text-foreground"}`}
+                      onClick={() => setActiveTab("uiSchema")}
+                    >
+                      UI Schema
+                    </button>
+                    <button
+                      className={`px-4 py-2 text-sm font-medium ${activeTab === "validateRules" ? "border-b-2 border-primary" : "text-muted-foreground hover:text-foreground"}`}
+                      onClick={() => setActiveTab("validateRules")}
+                    >
+                      Rules Engine
+                    </button>
+                  </div>
+
+                  {/* Content panels with conditional visibility */}
+                  <div className={`mt-2 h-[calc(100vh/2-48px)] ${activeTab === "schema" ? "" : "hidden"}`}>
+                    <JsonEditor
+                      editorId="jsonSchemaEditorContainer"
+                      jsonData={schema}
+                      onChange={handleSchemaChange}
+                    />
+                  </div>
+
+                  <div className={`mt-2 h-[calc(100vh/2-48px)] ${activeTab === "uiSchema" ? "" : "hidden"}`}>
+                    <JsonEditor
+                      editorId="uiSchemaEditorContainer"
+                      jsonData={uiSchema}
+                      onChange={handleUiSchemaChange}
+                      editorOptions={{ minimap: { enabled: false }, automaticLayout: true }}
+                    />
+                  </div>
+
+                  <div className={`mt-2 h-[calc(100vh/2-48px)] ${activeTab === "validateRules" ? "" : "hidden"}`}>
+                    <JsonEditor
+                      editorId="validateRulesEditorContainer"
+                      jsonData={validateRules || []}
+                      onChange={handleValidateRulesChange}
+                      editorOptions={{ minimap: { enabled: false }, automaticLayout: true }}
+                    />
+                  </div>
+                </div>
+              </ResponsiveContainer>
+
+              <ResponsiveContainer
+                heading="Form Data"
+                actions={
+                  <button
+                    className="default-button"
+                    onClick={handleGenerateSchemaFromData}
+                    title="Generate schema from data"
+                  >
+                    Generate Schema
+                  </button>
+                }
+              >
                 <div className="flex h-[calc(100vh/2)] flex-col">
                   <JsonEditor
-                    editorId="jsonSchemaEditorContainer"
-                    jsonData={schema}
-                    onChange={handleSchemaChange}
+                    editorId="formDataEditorContainer"
+                    jsonData={formData}
+                    onChange={handleFormDataChange}
+                    editorOptions={{ minimap: { enabled: false }, automaticLayout: true }}
                   />
                 </div>
               </ResponsiveContainer>
-              <div>
-                <div className="grid grid-cols-1 items-start justify-center gap-6 md:grid md:grid-cols-2">
-                  <ResponsiveContainer heading="UI Schema">
-                    <div className="flex h-[calc(100vh/3)] flex-col">
-                      <JsonEditor
-                        editorId="uiSchemaEditorContainer"
-                        jsonData={uiSchema}
-                        onChange={handleUiSchemaChange}
-                        editorOptions={{
-                          minimap: { enabled: false },
-                          automaticLayout: true
-                        }}
-                      />
-                    </div>
-                  </ResponsiveContainer>
-                  <ResponsiveContainer
-                    heading="Form Data"
-                    actions={
-                      <button
-                        className="default-button"
-                        onClick={handleGenerateSchemaFromData}
-                        title="Generate schema from data"
-                      >
-                        Generate Schema
-                      </button>
-                    }
-                  >
-                    <div className="flex h-[calc(100vh/3)] flex-col">
-                      <JsonEditor
-                        editorId="formDataEditorContainer"
-                        jsonData={formData}
-                        onChange={handleFormDataChange}
-                        editorOptions={{
-                          minimap: { enabled: false },
-                          automaticLayout: true
-                        }}
-                      />
-                    </div>
-                  </ResponsiveContainer>
-                </div>
-              </div>
             </div>
             <div className="col-span-2 grid items-start gap-6 lg:col-span-1">
               <ResponsiveContainer
@@ -262,6 +303,7 @@ function Home() {
                   >
                     {viewMode === "form" ? (
                       <TailwindForm
+                        key={formKey}
                         noHtml5Validate
                         schema={schema}
                         uiSchema={uiSchema}

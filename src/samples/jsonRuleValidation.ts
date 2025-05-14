@@ -53,5 +53,17 @@ export default {
         },
       },
     },
+    {
+      conditions: {
+        age: { lessThanEqual: 55 },
+      },
+      event: {
+        type: "ageCheck",
+        params: {
+          message: "I see an age discrimination lawsuit headed your way.",
+          field: "age",
+        },
+      },
+    },
   ],
 }

@@ -42,19 +42,6 @@ export interface JsonRule {
  *         field: "age"
  *       }
  *     }
- *   },
- *   // Email format
- *   {
- *     conditions: {
- *       email: { pattern: "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$" }
- *     },
- *     event: {
- *       type: "emailFormat",
- *       params: {
- *         message: "Please enter a valid email address.",
- *         field: "email"
- *       }
- *     }
  *   }
  * ];
  */

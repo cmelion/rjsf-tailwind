@@ -166,5 +166,5 @@ export default {
       textarea: '... World',
     },
     secret: "I'm a hidden string.",
-  },
+  }
 };

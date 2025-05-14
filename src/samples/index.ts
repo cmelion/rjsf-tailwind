@@ -6,7 +6,7 @@ import enumObjects from './enumObjects';
 import nested from './nested';
 import numbers from './numbers';
 import simple from './simple';
-import widgets from './widgets';
+import widgets from './widgets.ts';
 import ordering from './ordering';
 import references from './references';
 import custom from './custom';

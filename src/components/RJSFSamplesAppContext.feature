@@ -8,6 +8,24 @@ Feature: JSON Schema Form Samples
   Background:
       Given I am viewing the application
 
+  Scenario: JSON rules sample shows custom errors for invalid input
+    When I click on the sample button for "JSON rule validation"
+    Then I should see a form rendered correctly
+    And the form title should match "JSON rule validation"
+    When I fill out the form with:
+      | field           | value     | role       |
+      | Password        | abc       | textbox    |
+      | Repeat password | def       | textbox    |
+      | Age             | 17        | spinbutton |
+    And I submit the form
+    Then I should see the error "Passwords don't match"
+    And I should see the error "You need to be 18 because of some legal thing"
+    When I fill out the form with:
+      | field           | value     | role       |
+      | Age             | 56        | spinbutton |
+    And I submit the form
+    Then I should see the error "I see an age discrimination lawsuit headed your way"
+
   Scenario: Validation sample shows custom errors for invalid input
     When I click on the sample button for "Validation"
     Then I should see a form rendered correctly
@@ -21,19 +39,15 @@ Feature: JSON Schema Form Samples
     Then I should see the error "Passwords don't match"
     And I should see the error "You need to be 18 because of some legal thing"
 
-  Scenario: JSON rules sample shows custom errors for invalid input
-    When I click on the sample button for "JSON rule validation"
+  Scenario: Widgets sample shows custom errors for invalid input
+    When I click on the sample button for "Widgets"
     Then I should see a form rendered correctly
-    And the form title should match "JSON rule validation"
+    And the form title should match "Widgets"
     When I fill out the form with:
-      | field           | value     | role       |
-      | Password        | abc       | textbox    |
-      | Repeat password | def       | textbox    |
-      | Age             | 17        | spinbutton |
+      | field      | value          | role       |
+      | email      | invalid.email  | textbox    |
     And I submit the form
-    Then I should see the error "Passwords don't match"
-    And I should see the error "You need to be 18 because of some legal thing"
-
+    Then I should see the error "must match format \"email\""
 
   Scenario Outline: Verify form title for each sample
     When I click on the sample button for "<sample>"
